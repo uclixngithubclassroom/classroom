@@ -9,7 +9,7 @@ module InvitationsControllerMethods
     helper_method :current_assignment,
       :current_invitation,
       :current_submission,
-      :organization
+      :classroom
   end
 
   def accept
@@ -25,7 +25,7 @@ module InvitationsControllerMethods
   end
 
   def join_roster
-    entry = organization.roster.roster_entries.find(params[:roster_entry_id])
+    entry = classroom.roster.roster_entries.find(params[:roster_entry_id])
     entry.update_attributes!(user: current_user) unless user_on_roster?
   end
 
@@ -37,16 +37,16 @@ module InvitationsControllerMethods
   # - The roster=ignore param is not set (we set this if the user chooses to "skip" joining a roster for now)
   def check_should_redirect_to_roster_page
     return if params[:roster] == "ignore" ||
-        organization.roster.blank? ||
+        classroom.roster.blank? ||
         user_on_roster?
 
-    @roster = organization.roster
+    @roster = classroom.roster
 
     render "join_roster"
   end
 
   def user_on_roster?
-    roster = organization.roster
+    roster = classroom.roster
     RosterEntry.find_by(roster: roster, user: current_user)
   end
 
@@ -74,11 +74,11 @@ module InvitationsControllerMethods
     raise NotImplementedError
   end
 
-  # Prviate: Memoize the organization from the current_assignment.
+  # Prviate: Memoize the classroom from the current_assignment.
   #
   # Returns an Organization.
-  def organization
-    @organization ||= current_assignment.organization
+  def classroom
+    @classroom ||= current_assignment.classroom
   end
 
   # Private: Return the GitHub API

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class GroupAssignmentIndex < Chewy::Index
-  define_type GroupAssignment.includes(:organization) do
+  define_type GroupAssignment.includes(:classroom) do
     field :id
     field :slug
     field :title
@@ -9,6 +9,6 @@ class GroupAssignmentIndex < Chewy::Index
     field :updated_at
 
     field :organization_login,
-      value: ->(group_assignment) { group_assignment&.organization&.github_organization&.login }
+      value: ->(group_assignment) { group_assignment&.classroom&.github_organization&.login }
   end
 end

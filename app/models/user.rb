@@ -12,7 +12,7 @@ class User < ApplicationRecord
   has_many :invite_statuses, dependent: :destroy
   has_many :assignment_invitations, through: :invite_statuses
 
-  has_and_belongs_to_many :organizations
+  has_and_belongs_to_many :classrooms
 
   validates :last_active_at, presence: true
 
@@ -59,8 +59,8 @@ class User < ApplicationRecord
     site_admin
   end
 
-  def owns_all_assignments_for?(organization)
-    organization.all_assignments.map(&:creator_id).include? id
+  def owns_all_assignments_for?(classroom)
+    classroom.all_assignments.map(&:creator_id).include? id
   end
 
   def api_token(exp = 5.minutes.from_now)

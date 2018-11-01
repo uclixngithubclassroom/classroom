@@ -5,11 +5,11 @@ require "securerandom"
 
 FactoryBot.define do
   factory :assignment do
-    organization
+    classroom
 
     title                 { "#{Faker::Company.name} Assignment" }
     slug                  { title.parameterize                  }
-    creator               { organization.users.first            }
+    creator               { classroom.users.first            }
     assignment_invitation { build_assignment_invitation         }
   end
 
@@ -40,12 +40,12 @@ FactoryBot.define do
   end
 
   factory :group_assignment do
-    organization
+    classroom
 
     title    { "#{Faker::Company.name} Group Assignment"     }
     slug     { title.parameterize                            }
-    grouping { create(:grouping, organization: organization) }
-    creator  { organization.users.first                      }
+    grouping { create(:grouping, classroom: classroom) }
+    creator  { classroom.users.first                      }
   end
 
   factory :group_assignment_invitation do
@@ -53,7 +53,7 @@ FactoryBot.define do
   end
 
   factory :grouping do
-    organization
+    classroom
 
     title { Faker::Company.name }
     slug  { title.parameterize  }
@@ -66,7 +66,7 @@ FactoryBot.define do
     github_team_id { rand(1..1_000_000) }
   end
 
-  factory :organization do
+  factory :classroom do
     title      { "#{Faker::Company.name} Class" }
     github_id  { rand(1..1_000_000) }
 
@@ -74,8 +74,8 @@ FactoryBot.define do
       users_count 1
     end
 
-    after(:build) do |organization, evaluator|
-      create_list(:user, evaluator.users_count, organizations: [organization])
+    after(:build) do |classroom, evaluator|
+      create_list(:user, evaluator.users_count, classrooms: [classroom])
     end
   end
 
@@ -96,13 +96,13 @@ FactoryBot.define do
     uid    { rand(1..1_000_000) }
     token  { SecureRandom.hex(20) }
 
-    factory :user_with_organizations do
+    factory :user_with_classrooms do
       transient do
-        organizations_count 5
+        classrooms_count 5
       end
 
       after(:create) do |user, evaluator|
-        create_list(:organization, evaluator.organizations_count, users: [user])
+        create_list(:classroom, evaluator.classrooms_count, users: [user])
       end
     end
   end

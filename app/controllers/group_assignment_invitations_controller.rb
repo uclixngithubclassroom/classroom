@@ -38,7 +38,7 @@ class GroupAssignmentInvitationsController < ApplicationController
   end
 
   def setup
-    not_found unless organization.feature_enabled?(:group_import_resiliency)
+    not_found unless classroom.feature_enabled?(:group_import_resiliency)
   end
 
   # rubocop:disable Metrics/AbcSize
@@ -98,14 +98,14 @@ class GroupAssignmentInvitationsController < ApplicationController
   ## Before Actions
 
   def ensure_group_import_resiliency_enabled
-    not_found unless organization.feature_enabled?(:group_import_resiliency)
+    not_found unless classroom.feature_enabled?(:group_import_resiliency)
   end
 
   # rubocop:disable Metrics/AbcSize
   # rubocop:disable MethodLength
   # rubocop:disable Metrics/CyclomaticComplexity
   def route_based_on_status
-    return unless organization.feature_enabled?(:group_import_resiliency)
+    return unless classroom.feature_enabled?(:group_import_resiliency)
     status = group_invite_status&.status
     case status
     when "unaccepted", nil
@@ -185,7 +185,7 @@ class GroupAssignmentInvitationsController < ApplicationController
       flash[:error] = result.error
       redirect_to group_assignment_invitation_path
     when :success, :pending
-      if organization.feature_enabled?(:group_import_resiliency)
+      if classroom.feature_enabled?(:group_import_resiliency)
         GitHubClassroom.statsd.increment("v2_group_exercise_invitation.accept")
         route_based_on_status
       else
@@ -208,7 +208,7 @@ class GroupAssignmentInvitationsController < ApplicationController
   end
 
   def report_invitation_failure
-    if organization.feature_enabled?(:group_import_resiliency)
+    if classroom.feature_enabled?(:group_import_resiliency)
       GitHubClassroom.statsd.increment("v2_group_exercise_invitation.fail")
     else
       GitHubClassroom.statsd.increment("group_exercise_invitation.fail")
@@ -218,7 +218,7 @@ class GroupAssignmentInvitationsController < ApplicationController
   ## Resource Helpers
 
   def group
-    repo_access = current_user.repo_accesses.find_by(organization: organization)
+    repo_access = current_user.repo_accesses.find_by(classroom: classroom)
     return unless repo_access.present? && repo_access.groups.present?
 
     @group ||= repo_access.groups.find_by(grouping: group_assignment.grouping)
@@ -247,9 +247,9 @@ class GroupAssignmentInvitationsController < ApplicationController
   end
   helper_method :invitation
 
-  def organization
-    @organization ||= group_assignment.organization
+  def classroom
+    @classroom ||= group_assignment.classroom
   end
-  helper_method :organization
+  helper_method :classroom
 end
 # rubocop:enable Metrics/ClassLength

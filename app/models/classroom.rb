@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-class Organization < ApplicationRecord
+class Classroom < ApplicationRecord
   include Flippable
   include Sluggable
 
-  update_index("organization#organization") { self }
+  update_index("classroom#classroom") { self }
 
   default_scope { where(deleted_at: nil) }
 
@@ -57,7 +57,7 @@ class Organization < ApplicationRecord
 
   # Check if we are the last Classroom on this GitHub Organization
   def last_classroom_on_org?
-    Organization.where(github_id: github_id).length <= 1
+    Classroom.where(github_id: github_id).length <= 1
   end
 
   def silently_remove_organization_webhook

@@ -2,8 +2,8 @@
 
 require "rails_helper"
 
-RSpec.describe Organization, type: :model do
-  subject { create(:organization, github_id: 12_345) }
+RSpec.describe Classroom, type: :model do
+  subject { create(:classroom, github_id: 12_345) }
 
   describe "roster association" do
     it "can have a roster" do
@@ -26,7 +26,7 @@ RSpec.describe Organization, type: :model do
   end
 
   describe "#all_assignments" do
-    context "new Organization" do
+    context "new Classroom" do
       it "returns an empty array" do
         expect(subject.all_assignments).to be_kind_of(Array)
         expect(subject.all_assignments.count).to eql(0)
@@ -35,8 +35,8 @@ RSpec.describe Organization, type: :model do
 
     context "with Assignments and GroupAssignments" do
       before do
-        create(:assignment, organization: subject)
-        create(:group_assignment, organization: subject)
+        create(:assignment, classroom: subject)
+        create(:group_assignment, classroom: subject)
       end
 
       it "should return an array of Assignments and GroupAssignments" do
@@ -48,7 +48,7 @@ RSpec.describe Organization, type: :model do
 
   describe "#flipper_id" do
     it "should return an id" do
-      expect(subject.flipper_id).to eq("Organization:#{subject.id}")
+      expect(subject.flipper_id).to eq("Classroom:#{subject.id}")
     end
   end
 
@@ -67,7 +67,7 @@ RSpec.describe Organization, type: :model do
 
     context "multiple classrooms with same github_id" do
       before do
-        create(:organization, github_id: 12_345)
+        create(:classroom, github_id: 12_345)
       end
 
       it "returns false" do
@@ -77,7 +77,7 @@ RSpec.describe Organization, type: :model do
 
     context "multiple classrooms with different github_ids" do
       before do
-        create(:organization, github_id: 0)
+        create(:classroom, github_id: 0)
       end
 
       it "returns true" do
@@ -91,7 +91,7 @@ RSpec.describe Organization, type: :model do
       describe "#silently_remove_organization_webhook", :vcr do
         context "multiple classrooms on organization" do
           before do
-            create(:organization, github_id: 12_345)
+            create(:classroom, github_id: 12_345)
           end
 
           it "does not delete the webhook from GitHub" do
