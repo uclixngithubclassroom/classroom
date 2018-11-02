@@ -3,10 +3,10 @@
 require "rails_helper"
 
 RSpec.describe GroupsController, type: :controller do
-  let(:organization)  { classroom_org     }
+  let(:classroom)  { classroom_org     }
   let(:user)          { classroom_teacher }
 
-  let(:grouping) { create(:grouping, organization: organization) }
+  let(:grouping) { create(:grouping, classroom: classroom) }
   let(:group)    { create(:group, grouping: grouping, github_team_id: 2_976_595) }
 
   before do
@@ -24,14 +24,14 @@ RSpec.describe GroupsController, type: :controller do
 
     describe "PATCH #add_membership", :vcr do
       before do
-        RepoAccess.find_or_create_by!(user: user, organization: organization)
+        RepoAccess.find_or_create_by!(user: user, classroom: classroom)
       end
 
       it "correctly adds the user" do
         expect(group.repo_accesses.count).to eql(0)
 
         patch :add_membership, params: {
-          organization_id: organization.slug,
+          classroom_id: classroom.slug,
           grouping_id: grouping.slug,
           id: group.slug,
           user_id: user.id
@@ -43,7 +43,7 @@ RSpec.describe GroupsController, type: :controller do
 
     describe "DELETE #remove_membership", :vcr do
       before do
-        repo_access = RepoAccess.find_or_create_by!(user: user, organization: organization)
+        repo_access = RepoAccess.find_or_create_by!(user: user, classroom: classroom)
         group.repo_accesses << repo_access
       end
 
@@ -51,7 +51,7 @@ RSpec.describe GroupsController, type: :controller do
         expect(group.repo_accesses.count).to eql(1)
 
         delete :remove_membership, params: {
-          organization_id: organization.slug,
+          classroom_id: classroom.slug,
           grouping_id: grouping.slug,
           id: group.slug,
           user_id: user.id
@@ -61,7 +61,7 @@ RSpec.describe GroupsController, type: :controller do
       end
 
       after do
-        repo_access = RepoAccess.find_or_create_by!(user: user, organization: organization)
+        repo_access = RepoAccess.find_or_create_by!(user: user, classroom: classroom)
         group.repo_accesses.delete(repo_access)
       end
     end
@@ -75,7 +75,7 @@ RSpec.describe GroupsController, type: :controller do
     describe "PATCH #remove_membership", :vcr do
       it "returns a 404" do
         patch :add_membership, params: {
-          organization_id: organization.slug,
+          classroom_id: classroom.slug,
           grouping_id: grouping.slug,
           id: group.slug, user_id: user.id
         }
@@ -86,7 +86,7 @@ RSpec.describe GroupsController, type: :controller do
     describe "DELETE #remove_membership", :vcr do
       it "returns a 404" do
         delete :remove_membership, params: {
-          organization_id: organization.slug,
+          classroom_id: classroom.slug,
           grouping_id: grouping.slug,
           id: group.slug,
           user_id: user.id

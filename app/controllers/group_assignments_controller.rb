@@ -23,21 +23,21 @@ class GroupAssignmentsController < ApplicationController
       GitHubClassroom.statsd.increment("deadline.create") if @group_assignment.deadline
 
       flash[:success] = "\"#{@group_assignment.title}\" has been created!"
-      redirect_to organization_group_assignment_path(@organization, @group_assignment)
+      redirect_to organization_group_assignment_path(@classroom, @group_assignment)
     else
       render :new
     end
   end
 
   def show
-    pagination_key = @organization.roster ? :teams_page : :page
+    pagination_key = @classroom.roster ? :teams_page : :page
     @group_assignment_repos = GroupAssignmentRepo
       .where(group_assignment: @group_assignment)
       .order(:id)
       .page(params[pagination_key])
 
-    return unless @organization.roster
-    @students_not_on_team = @organization.roster.roster_entries
+    return unless @classroom.roster
+    @students_not_on_team = @classroom.roster.roster_entries
       .students_not_on_team(@group_assignment)
       .order(:id)
       .page(params[:students_page])
@@ -49,7 +49,7 @@ class GroupAssignmentsController < ApplicationController
     result = Assignment::Editor.perform(assignment: @group_assignment, options: update_group_assignment_params.to_h)
     if result.success?
       flash[:success] = "Assignment \"#{@group_assignment.title}\" is being updated"
-      redirect_to organization_group_assignment_path(@organization, @group_assignment)
+      redirect_to organization_group_assignment_path(@classroom, @group_assignment)
     else
       @group_assignment.reload if @group_assignment.slug.blank?
       render :edit
@@ -63,7 +63,7 @@ class GroupAssignmentsController < ApplicationController
       GitHubClassroom.statsd.increment("group_exercise.destroy")
 
       flash[:success] = "\"#{@group_assignment.title}\" is being deleted"
-      redirect_to @organization
+      redirect_to @classroom
     else
       render :edit
     end
@@ -82,7 +82,7 @@ class GroupAssignmentsController < ApplicationController
     grouping_id = new_group_assignment_params[:grouping_id]
 
     return if grouping_id.blank?
-    return if @organization.groupings.find_by(id: grouping_id)
+    return if @classroom.groupings.find_by(id: grouping_id)
 
     raise NotAuthorized, "You are not permitted to select this set of teams"
   end
@@ -106,7 +106,7 @@ class GroupAssignmentsController < ApplicationController
       )
       .merge(
         creator: current_user,
-        organization: @organization,
+        classroom: @classroom,
         starter_code_repo_id: starter_code_repo_id_param,
         deadline: deadline_param
       )
@@ -117,15 +117,15 @@ class GroupAssignmentsController < ApplicationController
     params
       .require(:grouping)
       .permit(:title)
-      .merge(organization: @organization)
+      .merge(classroom: @classroom)
   end
 
   def set_groupings
-    @groupings = @organization.groupings.map { |group| [group.title, group.id] }
+    @groupings = @classroom.groupings.map { |group| [group.title, group.id] }
   end
 
   def set_group_assignment
-    @group_assignment = @organization
+    @group_assignment = @classroom
       .group_assignments
       .includes(:group_assignment_invitation)
       .find_by!(slug: params[:id])

@@ -21,7 +21,7 @@ class AssignmentsController < ApplicationController
 
       send_create_assignment_statsd_events
       flash[:success] = "\"#{@assignment.title}\" has been created!"
-      redirect_to organization_assignment_path(@organization, @assignment)
+      redirect_to organization_assignment_path(@classroom, @assignment)
     else
       render :new
     end
@@ -30,8 +30,8 @@ class AssignmentsController < ApplicationController
   # rubocop:disable MethodLength
   # rubocop:disable Metrics/AbcSize
   def show
-    if @organization.roster
-      @roster_entries = @organization.roster.roster_entries
+    if @classroom.roster
+      @roster_entries = @classroom.roster.roster_entries
         .order(:id)
         .page(params[:students_page])
         .order_for_view(@assignment)
@@ -56,7 +56,7 @@ class AssignmentsController < ApplicationController
     result = Assignment::Editor.perform(assignment: @assignment, options: update_assignment_params.to_h)
     if result.success?
       flash[:success] = "Assignment \"#{@assignment.title}\" is being updated"
-      redirect_to organization_assignment_path(@organization, @assignment)
+      redirect_to organization_assignment_path(@classroom, @assignment)
     else
       @assignment.reload if @assignment.slug.blank?
       render :edit
@@ -70,7 +70,7 @@ class AssignmentsController < ApplicationController
       GitHubClassroom.statsd.increment("exercise.destroy")
 
       flash[:success] = "\"#{@assignment.title}\" is being deleted"
-      redirect_to @organization
+      redirect_to @classroom
     else
       render :edit
     end
@@ -90,27 +90,27 @@ class AssignmentsController < ApplicationController
       .require(:assignment)
       .permit(:title, :slug, :public_repo, :students_are_repo_admins, :invitations_enabled)
       .merge(creator: current_user,
-             organization: @organization,
+             classroom: @classroom,
              starter_code_repo_id: starter_code_repo_id_param,
              deadline: deadline_param)
   end
 
   # An unlinked user in the context of an assignment is a user who:
   # - Is a user on the assignment
-  # - Is not on the organization roster
+  # - Is not on the classroom roster
   def set_unlinked_users
-    return unless @organization.roster
+    return unless @classroom.roster
 
     assignment_users = @assignment.users
 
-    roster_entry_user_ids = @organization.roster.roster_entries.pluck(:user_id)
+    roster_entry_user_ids = @classroom.roster.roster_entries.pluck(:user_id)
     roster_entry_users = User.where(id: roster_entry_user_ids)
 
     @unlinked_users = assignment_users - roster_entry_users
   end
 
   def set_assignment
-    @assignment = @organization.assignments.includes(:assignment_invitation).find_by!(slug: params[:id])
+    @assignment = @classroom.assignments.includes(:assignment_invitation).find_by!(slug: params[:id])
   end
 
   def deadline_param

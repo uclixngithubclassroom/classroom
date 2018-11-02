@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Should this be named ClassroomAuthorization instead?
 module OrganizationAuthorization
   extend ActiveSupport::Concern
 
@@ -8,20 +9,21 @@ module OrganizationAuthorization
   end
 
   def authorize_organization_access
-    return if @organization.users.include?(current_user)
-    github_organization.admin?(current_user.github_user.login) ? @organization.users << current_user : not_found
+    return if @classroom.users.include?(current_user)
+    github_organization.admin?(current_user.github_user.login) ? @classroom.users << current_user : not_found
   end
 
   private
 
   def github_organization
-    @github_organization ||= GitHubOrganization.new(current_user.github_client, @organization.github_id)
+    @github_organization ||= GitHubOrganization.new(current_user.github_client, @classroom.github_id)
   end
 
+  # Should this be named set_classroom instead?
   def set_organization
-    return @organization if defined?(@organization)
+    return @classroom if defined?(@classroom)
 
     organization_id = params[:organization_id] || params[:id]
-    @organization = Organization.find_by!(slug: organization_id)
+    @classroom = Classroom.find_by!(slug: organization_id)
   end
 end

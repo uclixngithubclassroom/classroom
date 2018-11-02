@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # rubocop:disable Metrics/ClassLength
-class ClassroomsController < Orgs::Controller
+class OrganizationsController < Orgs::Controller
   before_action :ensure_team_management_flipper_is_enabled, only: [:show_groupings]
 
   before_action :authorize_organization_addition,     only: [:create]
@@ -57,7 +57,7 @@ class ClassroomsController < Orgs::Controller
   end
 
   def update
-    if current_classroom.update_attributes(update_organization_params)
+    if current_classroom.update_attributes(update_classroom_params)
       flash[:success] = "Organization \"#{current_classroom.title}\" updated"
       redirect_to current_classroom
     else
@@ -95,7 +95,7 @@ class ClassroomsController < Orgs::Controller
   def setup; end
 
   def setup_organization
-    if current_classroom.update_attributes(update_organization_params)
+    if current_classroom.update_attributes(update_classroom_params)
       redirect_to invite_organization_path(current_classroom)
     else
       render :setup
@@ -114,12 +114,12 @@ class ClassroomsController < Orgs::Controller
   def github_organization_from_params
     @github_organization_from_params ||= GitHubOrganization.new(
       current_user.github_client,
-      params[:organization][:github_id].to_i
+      params[:classroom][:github_id].to_i
     )
   end
 
   def new_organization_params
-    params.require(:organization).permit(:github_id).merge(users: [current_user])
+    params.require(:classroom).permit(:github_id).merge(users: [current_user])
   end
 
   # rubocop:disable Metrics/AbcSize
@@ -161,9 +161,9 @@ class ClassroomsController < Orgs::Controller
     @users_github_organizations = Kaminari.paginate_array(@users_github_organizations).page(params[:page]).per(24)
   end
 
-  def update_organization_params
+  def update_classroom_params
     params
-      .require(:organization)
+      .require(:classroom)
       .permit(:title)
   end
 

@@ -28,7 +28,7 @@ module GitHubFactory
       users: [classroom_teacher]
     }
 
-    @classroom_org = create(:organization, options)
+    @classroom_org = create(:classroom, options)
   end
 
   def global_relay_id_from_id(id)

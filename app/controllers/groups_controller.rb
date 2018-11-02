@@ -7,7 +7,7 @@ class GroupsController < ApplicationController
   before_action :set_member, only: %i[add_membership remove_membership]
 
   def add_membership
-    repo_access = RepoAccess.find_by(user: @user, organization: @organization)
+    repo_access = RepoAccess.find_by(user: @user, classroom: @classroom)
 
     if repo_access.present?
       group.repo_accesses << repo_access
@@ -20,7 +20,7 @@ class GroupsController < ApplicationController
   end
 
   def remove_membership
-    repo_access = RepoAccess.find_by(user: @user, organization: @organization)
+    repo_access = RepoAccess.find_by(user: @user, classroom: @classroom)
 
     if repo_access.present?
       group.repo_accesses.delete(repo_access)

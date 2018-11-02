@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # rubocop:disable Metrics/ClassLength
-class Organization
+class Classroom
   class Creator
     include Rails.application.routes.url_helpers
 
@@ -10,19 +10,19 @@ class Organization
     class Result
       class Error < StandardError; end
 
-      def self.success(organization)
-        new(:success, organization: organization)
+      def self.success(classroom)
+        new(:success, classroom: classroom)
       end
 
       def self.failed(error)
         new(:failed, error: error)
       end
 
-      attr_reader :error, :organization
+      attr_reader :error, :classroom
 
-      def initialize(status, organization: nil, error: nil)
+      def initialize(status, classroom: nil, error: nil)
         @status       = status
-        @organization = organization
+        @classroom = classroom
         @error        = error
       end
 
@@ -35,16 +35,16 @@ class Organization
       end
     end
 
-    # Public: Create an Organization.
+    # Public: Create an Classroom.
     #
-    # users     - An Array of Users that will own the organization.
+    # users     - An Array of Users that will own the classroom.
     # github_id - The Integer GitHub id.
     #
     # Examples
     #
-    #   Organization::Creator.perform([User.first], github_id: 12345)
+    #   Classroom::Creator.perform([User.first], github_id: 12345)
     #
-    # Returns an Organization::Creator::Result.
+    # Returns an Classroom::Creator::Result.
     def self.perform(users:, github_id:)
       new(users: users, github_id: github_id).perform
     end
@@ -54,19 +54,19 @@ class Organization
       @github_id = github_id.to_i
     end
 
-    # Internal: Create create a Classroom from an Organization.
+    # Internal: Create create a Classroom from an Classroom.
     #
     # rubocop:disable MethodLength
     # rubocop:disable AbcSize
     def perform
-      organization = Organization.new
+      classroom = Classroom.new
 
       ensure_users_are_authorized!
 
       begin
         github_organization = GitHubOrganization.new(users.first.github_client, github_id)
 
-        organization.update_attributes!(
+        classroom.update_attributes!(
           github_id: github_id,
           title: title,
           users: users,
@@ -77,14 +77,14 @@ class Organization
         raise Result::Error, err.message
       end
 
-      update_default_repository_permission_to_none!(organization)
+      update_default_repository_permission_to_none!(classroom)
 
       GitHubClassroom.statsd.increment("classroom.created")
 
-      Result.success(organization)
+      Result.success(classroom)
     rescue Result::Error => err
-      silently_destroy_organization_webhook(organization)
-      destroy_organization(organization)
+      silently_destroy_organization_webhook(classroom)
+      destroy_classroom(classroom)
 
       Result.failed(err.message)
     end
@@ -93,7 +93,7 @@ class Organization
 
     private
 
-    # Internal: Create an GitHub Organization WebHook if there
+    # Internal: Create an GitHub Classroom WebHook if there
     # is a user who has the correct token scope.
     #
     # Returns an Integer id, or raises a Result::Error
@@ -122,7 +122,7 @@ class Organization
     # rubocop:enable MethodLength
 
     # Internal: Make sure every user being added to the
-    # Organization is an admin on GitHub.
+    # Classroom is an admin on GitHub.
     #
     # Returns nil or raises a Result::Error
     def ensure_users_are_authorized!
@@ -139,33 +139,33 @@ class Organization
     # don't accidently see other repos.
     #
     # Returns nil or raises a Result::Error
-    def update_default_repository_permission_to_none!(organization)
-      organization.github_organization.update_default_repository_permission!("none")
+    def update_default_repository_permission_to_none!(classroom)
+      classroom.github_organization.update_default_repository_permission!("none")
     rescue GitHub::Error => err
       raise Result::Error, err.message
     end
 
-    # Internal: Remove the Organization from the database.
+    # Internal: Remove the Classroom from the database.
     #
     # Returns true or raises an ActiveRecord::Error.
-    def destroy_organization(organization)
-      organization.destroy!
+    def destroy_classroom(classroom)
+      classroom.destroy!
     end
 
-    # Internal: Remove the Organization WebHook is possible.
+    # Internal: Remove the Classroom WebHook is possible.
     #
     # Returns true.
-    def silently_destroy_organization_webhook(organization)
-      return true if organization.webhook_id.nil?
+    def silently_destroy_organization_webhook(classroom)
+      return true if classroom.webhook_id.nil?
       return true unless (user = user_with_admin_org_hook_scope)
 
       github_organization = GitHubOrganization.new(user.github_client, github_id)
-      github_organization.remove_organization_webhook(organization.webhook_id)
+      github_organization.remove_organization_webhook(classroom.webhook_id)
 
       true
     end
 
-    # Internal: Get the default title for the Organization.
+    # Internal: Get the default title for the Classroom.
     #
     # Example
     #
@@ -264,7 +264,7 @@ class Organization
     #
     # Returns a String for the webhook_id or nil
     def existing_webhook_id
-      classroom_with_same_org = Organization.find_by(github_id: github_id)
+      classroom_with_same_org = Classroom.find_by(github_id: github_id)
       classroom_with_same_org ? classroom_with_same_org.webhook_id : nil
     end
 
@@ -291,7 +291,7 @@ class Organization
     #
     # Returns a Boolean on whether duplicate classroom title is
     def unique_title?(base_title)
-      Organization.where(title: base_title, github_id: github_id).blank?
+      Classroom.where(title: base_title, github_id: github_id).blank?
     end
   end
 end
