@@ -60,15 +60,15 @@ Rails.application.routes.draw do
   end
 
   scope path_names: { edit: "settings" } do
-    resources :organizations, path: "classrooms" do
+    resources :classrooms do
       member do
         get   :invite
         get   :new_assignment, path: "new-assignment"
         get   :setup
         patch :setup_organization
-        get   "settings/invitations", to: "organizations#invitation"
-        get   "settings/teams",       to: "organizations#show_groupings"
-        delete "users/:user_id",      to: "organizations#remove_user", as: "remove_user"
+        get   "settings/invitations", to: "classrooms#invitation"
+        get   "settings/teams",       to: "classrooms#show_groupings"
+        delete "users/:user_id",      to: "classrooms#remove_user", as: "remove_user"
 
         resource :roster, only: %i[show new create], controller: "orgs/rosters" do
           patch :link

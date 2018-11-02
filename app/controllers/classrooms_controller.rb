@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # rubocop:disable Metrics/ClassLength
-class OrganizationsController < Orgs::Controller
+class ClassroomsController < Orgs::Controller
   before_action :ensure_team_management_flipper_is_enabled, only: [:show_groupings]
 
   before_action :authorize_organization_addition,     only: [:create]
@@ -32,10 +32,10 @@ class OrganizationsController < Orgs::Controller
 
     if result.success?
       @classroom = result.classroom
-      redirect_to setup_organization_path(@classroom)
+      redirect_to setup_classroom_path(@classroom)
     else
       flash[:error] = result.error
-      redirect_to new_organization_path
+      redirect_to new_classroom_path
     end
   end
   # rubocop:enable MethodLength
@@ -70,7 +70,7 @@ class OrganizationsController < Orgs::Controller
       DestroyResourceJob.perform_later(current_classroom)
 
       flash[:success] = "Your organization, @#{current_classroom.github_organization.login} is being reset"
-      redirect_to organizations_path
+      redirect_to classrooms_path
     else
       render :edit
     end
@@ -85,7 +85,7 @@ class OrganizationsController < Orgs::Controller
       flash[:success] = "The user has been removed from the classroom"
     end
 
-    redirect_to settings_invitations_organization_path
+    redirect_to settings_invitations_classroom_path
   end
 
   def new_assignment; end
@@ -96,7 +96,7 @@ class OrganizationsController < Orgs::Controller
 
   def setup_organization
     if current_classroom.update_attributes(update_classroom_params)
-      redirect_to invite_organization_path(current_classroom)
+      redirect_to invite_classroom_path(current_classroom)
     else
       render :setup
     end
@@ -184,7 +184,7 @@ class OrganizationsController < Orgs::Controller
     classroom_exists_on_org = Classroom.unscoped.find_by(github_id: new_organization_params[:github_id])
     if classroom_exists_on_org && !multiple_classrooms_per_org_enabled?
       flash[:error] = "Validation failed: GitHub ID has already been taken"
-      redirect_to new_organization_path
+      redirect_to new_classroom_path
       return false
     end
     true

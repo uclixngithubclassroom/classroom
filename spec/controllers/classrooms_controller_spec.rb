@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe OrganizationsController, type: :controller do
+RSpec.describe ClassroomsController, type: :controller do
   let(:classroom) { classroom_org }
   let(:user)      { classroom_teacher }
   let(:student)   { classroom_student }
@@ -160,7 +160,7 @@ RSpec.describe OrganizationsController, type: :controller do
 
       post :create, params: { classroom: organization_params }
 
-      expect(response).to redirect_to(setup_organization_path(Classroom.last))
+      expect(response).to redirect_to(setup_classroom_path(Classroom.last))
     end
   end
 
@@ -169,7 +169,7 @@ RSpec.describe OrganizationsController, type: :controller do
       get :show, params: { id: classroom.slug }
 
       expect(response.status).to eq(200)
-      expect(assigns(:current_organization)).to_not be_nil
+      expect(assigns(:current_classroom)).to_not be_nil
     end
   end
 
@@ -178,7 +178,7 @@ RSpec.describe OrganizationsController, type: :controller do
       get :edit, params: { id: classroom.slug }
 
       expect(response).to have_http_status(:success)
-      expect(assigns(:current_organization)).to_not be_nil
+      expect(assigns(:current_classroom)).to_not be_nil
     end
   end
 
@@ -187,7 +187,7 @@ RSpec.describe OrganizationsController, type: :controller do
       get :invitation, params: { id: classroom.slug }
 
       expect(response).to have_http_status(:success)
-      expect(assigns(:current_organization)).to_not be_nil
+      expect(assigns(:current_classroom)).to_not be_nil
     end
   end
 
@@ -215,7 +215,7 @@ RSpec.describe OrganizationsController, type: :controller do
       it "without assignments" do
         patch :remove_user, params: { id: classroom.slug, user_id: @teacher.id }
 
-        expect(response).to redirect_to(settings_invitations_organization_path)
+        expect(response).to redirect_to(settings_invitations_classroom_path)
         expect(flash[:success]).to be_present
         expect { classroom.users.find(id: @teacher.id) }.to raise_error(ActiveRecord::RecordNotFound)
       end
@@ -227,7 +227,7 @@ RSpec.describe OrganizationsController, type: :controller do
 
         expect(assignment.reload.creator_id).not_to eq(@teacher.id)
         expect { classroom.users.find(id: @teacher.id) }.to raise_error(ActiveRecord::RecordNotFound)
-        expect(response).to redirect_to(settings_invitations_organization_path)
+        expect(response).to redirect_to(settings_invitations_classroom_path)
         expect(flash[:success]).to be_present
       end
     end
@@ -243,7 +243,7 @@ RSpec.describe OrganizationsController, type: :controller do
         get :show_groupings, params: { id: classroom.slug }
 
         expect(response).to have_http_status(:success)
-        expect(assigns(:current_organization)).to_not be_nil
+        expect(assigns(:current_classroom)).to_not be_nil
       end
 
       after do
@@ -264,7 +264,7 @@ RSpec.describe OrganizationsController, type: :controller do
       options = { title: "New Title" }
       patch :update, params: { id: classroom.slug, classroom: options }
 
-      expect(response).to redirect_to(organization_path(Classroom.find(classroom.id)))
+      expect(response).to redirect_to(classroom_path(Classroom.find(classroom.id)))
     end
   end
 
@@ -286,7 +286,7 @@ RSpec.describe OrganizationsController, type: :controller do
 
     it "redirects back to the index page" do
       delete :destroy, params: { id: classroom.slug }
-      expect(response).to redirect_to(organizations_path)
+      expect(response).to redirect_to(classrooms_path)
     end
   end
 
@@ -295,7 +295,7 @@ RSpec.describe OrganizationsController, type: :controller do
       get :invite, params: { id: classroom.slug }
 
       expect(response.status).to eq(200)
-      expect(assigns(:current_organization)).to_not be_nil
+      expect(assigns(:current_classroom)).to_not be_nil
     end
   end
 
@@ -304,7 +304,7 @@ RSpec.describe OrganizationsController, type: :controller do
       get :setup, params: { id: classroom.slug }
 
       expect(response.status).to eq(200)
-      expect(assigns(:current_organization)).to_not be_nil
+      expect(assigns(:current_classroom)).to_not be_nil
     end
   end
 
@@ -319,7 +319,7 @@ RSpec.describe OrganizationsController, type: :controller do
     end
 
     it "redirects to the invite page on success" do
-      expect(response).to redirect_to(organization_path(Classroom.find(classroom.id)))
+      expect(response).to redirect_to(classroom_path(Classroom.find(classroom.id)))
     end
   end
 end
