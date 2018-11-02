@@ -2,7 +2,7 @@
 
 <div class="site-content">
   <div class="site-content-cap">
-    <h2 class="site-content-heading"><%= t('views.organizations.new_assignment') %></h2>
+    <h2 class="site-content-heading"><%= t('views.classrooms.new_assignment') %></h2>
   </div>
 
   <div class="site-content-body">
@@ -11,22 +11,22 @@
         <span class="assignment-icon assignment-icon-individual">
           <%= octicon 'person', height: 22 %>
         </span>
-        <h3 class="assignment-option-name"><%= t('views.organizations.individual_assignment') %></h3>
-        <p class="assignment-option-description"><%= t('views.organizations.individual_assignment_desc') %></p>
+        <h3 class="assignment-option-name"><%= t('views.classrooms.individual_assignment') %></h3>
+        <p class="assignment-option-description"><%= t('views.classrooms.individual_assignment_desc') %></p>
 
         <%= link_to new_organization_assignment_path(current_organization), class: 'btn btn-primary', role: 'button' do %>
-          <%= t('views.organizations.create_individual_assignment') %>
+          <%= t('views.classrooms.create_individual_assignment') %>
         <% end %>
       </div>
       <div class="col-md-6 float-left mx-auto text-center p-2 d-sm-block">
         <span class="assignment-icon assignment-icon-group">
           <%= octicon 'organization', height: 22 %>
         </span>
-        <h3 class="assignment-option-name"><%= t('views.organizations.group_assignment') %></h3>
-        <p class="assignment-option-description"><%= t('views.organizations.group_assignment_desc') %></p>
+        <h3 class="assignment-option-name"><%= t('views.classrooms.group_assignment') %></h3>
+        <p class="assignment-option-description"><%= t('views.classrooms.group_assignment_desc') %></p>
 
         <%= link_to new_organization_group_assignment_path(current_organization), class: 'btn btn-primary', role: 'button' do %>
-          <%= t('views.organizations.create_group_assignment') %>
+          <%= t('views.classrooms.create_group_assignment') %>
         <% end %>
       </div>
     </div>

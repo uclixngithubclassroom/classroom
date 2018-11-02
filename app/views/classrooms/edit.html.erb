@@ -1,34 +1,34 @@
 <div class="remodal-bg">
-  <%= render 'organizations/organization_banner' %>
+  <%= render 'classrooms/classroom_banner' %>
 
   <div class="columns">
     <div class="one-fourth column">
-      <%= render partial: 'organizations/side_menu' %>
+      <%= render partial: 'classrooms/side_menu' %>
     </div>
     <div class="three-fourths column">
 
       <div class="boxed-group">
-        <h3><%= t('views.organizations.profile_information') %></h3>
+        <h3><%= t('views.classrooms.profile_information') %></h3>
         <div class="boxed-group-inner clearfix">
-          <%= form_for current_organization do |f| %>
+          <%= form_for current_classroom do |f| %>
             <%= render 'shared/error_messages', object: f.object %>
             <dl class="form">
               <dt><%= f.label :title %></dt>
               <dd><%= f.text_field :title, class: 'textfield form-control input-contrast input-block' %></dd>
             </dl>
             <div class="form-actions">
-              <%= f.submit t('views.organizations.save_changes'), class: 'btn btn-primary' %>
+              <%= f.submit t('views.classrooms.save_changes'), class: 'btn btn-primary' %>
             </div>
           <% end %>
         </div>
       </div>
 
       <div class="boxed-group dangerzone">
-        <h3><%= t('views.organizations.delete_submit') %></h3>
+        <h3><%= t('views.classrooms.delete_submit') %></h3>
         <div class="boxed-group-inner pt-2 clearfix">
-          <p><%= t('views.organizations.theres_no_going_back') %></p>
+          <p><%= t('views.classrooms.theres_no_going_back') %></p>
           <p>
-            <a data-remodal-target="reset-and-remove-organization" class="btn btn-danger"><%= t('views.organizations.delete_submit') %></a>
+            <a data-remodal-target="reset-and-remove-classroom" class="btn btn-danger"><%= t('views.classrooms.delete_submit') %></a>
           </p>
         </div>
       </div>
@@ -37,5 +37,5 @@
   </div>
 
 
-  <%= render partial: 'organizations/reset_and_remove_organization_modal' %>
+  <%= render partial: 'classrooms/reset_and_remove_classroom_modal' %>
 </div>

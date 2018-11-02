@@ -94,7 +94,7 @@ class ClassroomsController < Orgs::Controller
 
   def setup; end
 
-  def setup_organization
+  def setup_classroom
     if current_classroom.update_attributes(update_classroom_params)
       redirect_to invite_classroom_path(current_classroom)
     else

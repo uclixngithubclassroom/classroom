@@ -1,6 +1,6 @@
 en:
   views:
-    organizations:
+    classrooms:
       select_organization: 'Select an organization for your new classroom'
       no_organizations: 'Oh, you don’t have any organizations on your GitHub account.'
       please_create_or_authorize_new_organization: "Please <a href='https://github.com/organizations/new'>create an organization on GitHub.com</a> or %{authorize_href} and then come back."

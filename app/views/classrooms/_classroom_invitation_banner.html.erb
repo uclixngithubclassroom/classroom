@@ -1,0 +1,8 @@
+<% content_for :classroom_invitation_banner do %>
+  <div class="classroom-banner" style="background-image: <%= classroom.github_organization.geo_pattern_data_uri %>">
+    <div class="container-lg">
+      <h1 class="classroom-name"><%= organization.title %></h1>
+      <p class="classroom-login"><%= link_to "@#{classroom.github_organization.login}", classroom.github_organization.html_url %></p>
+    </div>
+  </div>
+<% end %>

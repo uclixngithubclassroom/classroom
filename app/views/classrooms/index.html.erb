@@ -1,25 +1,25 @@
 <div class="site-content">
 
   <div class="site-content-cap clearfix">
-    <% if @organizations.present? %>
-      <%= link_to new_organization_path, class: 'btn btn-primary float-right', role: 'button' do %>
-        <%= t('views.organizations.new_classroom') %>
+    <% if @classrooms.present? %>
+      <%= link_to new_classroom_path, class: 'btn btn-primary float-right', role: 'button' do %>
+        <%= t('views.classrooms.new_classroom') %>
       <% end %>
     <% end %>
-    <h2 class="site-content-heading float-left"><%= t('views.organizations.classrooms') %></h2>
+    <h2 class="site-content-heading float-left"><%= t('views.classrooms.classrooms') %></h2>
   </div>
 
-  <div class="site-content-body organization-list-items">
-    <% if @organizations.present? %>
-      <%= render @organizations %>
-      <%= render partial: 'shared/pagination', locals: { collection: @organizations } %>
+  <div class="site-content-body classsroom-list-items">
+    <% if @classrooms.present? %>
+      <%= render @classrooms %>
+      <%= render partial: 'shared/pagination', locals: { collection: @classrooms } %>
     <% else %>
       <div class="blankslate large-format spacious clean-background">
-        <h3><%= t('views.organizations.no_classrooms') %></h3>
-        <p><%= t('views.organizations.no_classrooms_desc') %></p>
+        <h3><%= t('views.classrooms.no_classrooms') %></h3>
+        <p><%= t('views.classrooms.no_classrooms_desc') %></p>
 
-        <%= link_to new_organization_path, class: 'btn btn-primary btn-big', role: 'button' do %>
-          <%= t('views.organizations.create_first_classroom') %>
+        <%= link_to new_classroom_path, class: 'btn btn-primary btn-big', role: 'button' do %>
+          <%= t('views.classrooms.create_first_classroom') %>
         <% end %>
       </div>
     <% end %>

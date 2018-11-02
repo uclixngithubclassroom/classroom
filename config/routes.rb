@@ -65,7 +65,7 @@ Rails.application.routes.draw do
         get   :invite
         get   :new_assignment, path: "new-assignment"
         get   :setup
-        patch :setup_organization
+        patch :setup_classroom
         get   "settings/invitations", to: "classrooms#invitation"
         get   "settings/teams",       to: "classrooms#show_groupings"
         delete "users/:user_id",      to: "classrooms#remove_user", as: "remove_user"
