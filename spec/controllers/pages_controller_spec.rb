@@ -3,6 +3,8 @@
 require "rails_helper"
 
 RSpec.describe PagesController, type: :controller do
+  render_views
+
   describe "GET #home" do
     it "returns success" do
       get :home
@@ -13,7 +15,7 @@ RSpec.describe PagesController, type: :controller do
       sign_in_as(create(:user))
 
       get :home
-      expect(response).to redirect_to(organizations_path)
+      expect(response).to redirect_to(classrooms_path)
     end
   end
 end

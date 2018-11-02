@@ -8,7 +8,7 @@ class PagesController < ApplicationController
   skip_before_action :authenticate_user!
 
   def home
-    return redirect_to organizations_path if logged_in?
+    return redirect_to classrooms_path if logged_in?
 
     render :homev2, layout: "layouts/pagesv2" if public_home_v2_enabled?
   end
