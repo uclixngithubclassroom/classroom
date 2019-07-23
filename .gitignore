@@ -14,8 +14,6 @@ vendor/bundle
 /tmp
 /coverage
 
-# Ignore local environment variables
-.env
 
 # Rails ERD
 erd.pdf

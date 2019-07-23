@@ -147,6 +147,17 @@ script/setup
 
 Once that's done the script will kindly remind you to fill out you `.env` file inside the repository, this is the breakdown.
 
+## UCL Docker Deployment 
+ #### Windows
+  - Clone the repository.
+  - Navigate to the cloned folder
+  - Download Docker Toolbox v18.09.3 from the following link [https://github.com/docker/toolbox/releases]. After the installation process make sure that you execute the Docker Quickstart Terminal or alternatively run the command ```docker-machine run default``` from the Powershell.
+  - Make sure that the VM has enough memory to run the container. You can ensure this by connecting to the VM and increasing the memory allocated for it by ```docker-machine ssh```. Afterwards, inside the VM increase the memory by executing ```sudo sysctl -w vm.max_map_count=262144``` 
+  - Run the command ```docker-compose -f docker-compose-sc.yml up --build```, In order to build the Docker Image.
+
+ #### Linux
+ #### Mac OS
+
 ### Development environment variables
 
 These values must be present in your `.env` file (created by `script/setup`).
@@ -243,6 +254,8 @@ Test Azure deployment.
 
 
 There are a few environment variables you will need to know in order to get Classroom working on production.
+
+	
 
 ### Production environment variables
 

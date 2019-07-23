@@ -80,6 +80,10 @@ group :development do
   gem "web-console", "~> 3.5", ">= 3.5.1"
 end
 
+group :development do
+  gem 'rb-readline'
+end
+
 group :development, :test do
   gem "awesome_print",            "~> 1.8", require: "ap"
   gem "bullet",                   "~> 5.6", ">= 5.6.1"

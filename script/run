@@ -3,19 +3,17 @@
 # script/setup: Set up application for the first time after cloning, or set it
 #               back to the initial first unused state.
 
+
+
 set -e
 
 cd "$(dirname "$0")/.."
 
-if [ -f "$(which docker-compose)" ]; then
-  echo "===> Removing existing containers..."
-  docker-compose down
+unset BUNDLER_VERSION
+if ! pgrep -x 'rinetd' > /dev/null
+then
+  rinetd
 fi
-
-script/bootstrap
-
-echo "===> Waiting for the containers to mount..."
-sleep 5
 
 echo "===> Preparing database..."
 bin/rails db:setup
@@ -37,4 +35,22 @@ if [ -z "$RAILS_ENV" ] && [ -z "$RACK_ENV" ]; then
   fi
 fi
 
-echo "==> Your app is almost ready! Please make sure you fill out your .env file."
+echo "===> Waiting for the containers to mount..."
+sleep 5
+
+echo "==> Updating database..."
+bin/rake db:migrate db:test:prepare
+
+echo "===> Remove old logs and tempfiles..."
+bin/rails log:clear tmp:clear
+
+echo "===> Restart application server..."
+bin/rails restart
+
+
+test -z "$RACK_ENV" &&
+  RACK_ENV='development'
+
+# boot the app and any other necessary processes.
+bundle exec foreman start -f Procfile.dev.sc
+
