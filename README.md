@@ -153,10 +153,81 @@ Once that's done the script will kindly remind you to fill out you `.env` file i
   - Navigate to the cloned folder
   - Download Docker Toolbox v18.09.3 from the following link [https://github.com/docker/toolbox/releases]. After the installation process make sure that you execute the Docker Quickstart Terminal or alternatively run the command ```docker-machine run default``` from the Powershell.
   - Make sure that the VM has enough memory to run the container. You can ensure this by connecting to the VM and increasing the memory allocated for it by ```docker-machine ssh```. Afterwards, inside the VM increase the memory by executing ```sudo sysctl -w vm.max_map_count=262144``` 
-  - Run the command ```docker-compose -f docker-compose-sc.yml up --build```, In order to build the Docker Image.
+  - Fill out the environment variables inside the .env file in the root path of the Github Classroom. You can modify it by entering ```nano .env```in the terminal.
+  - Run the command ```docker-compose -f docker-compose-sc.yml up --build```, In order to build the Docker Image and run the containers. (We write a new docker-compose-sc.yml file to implement the dockerization.)
 
  #### Linux
+
  #### Mac OS
+  - Clone the repository.
+  - Navigate to the cloned folder
+  - Download Docker Desktop for Mac from the following link [https://hub.docker.com/editions/community/docker-ce-desktop-mac]. After the installation process make sure that you execute the Docker application in your computer. It may take 1-2 mins to start Docker.
+  - Fill out the environment variables inside the .env file in the root path of the Github Classroom. You can modify it by entering ```nano .env```in the terminal.
+  - Run the command ```docker-compose -f docker-compose-sc.yml up --build```, In order to build the Docker Image and run the containners. (We write a new docker-compose-sc.yml file to implement the dockerization.)
+  - The containers will automatically run the setup process, wait until the classroom-rubyrails is listening on localhost:5000.
+
+## AKS Deployment process (Unfinished)
+
+- The main process of the AKS deployment follows the link [https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-prepare-app], We will automate the process after we finish manual deployment.
+- Before the AKS deployment, make sure you have azure CLI, kubernetes CLI, Kompose and Docker installed in your computer.
+
+
+- Get the docker images from the step in UCL Docker Deployment instruction.
+- Create a resourse group ```az group create --name myResourceGroup --location uksouth```
+- Creat an Azure Container Registry inside the resource group ```az acr create --resource-group myResourceGroup --name <acrName> --sku Basic```
+- Login the container registry  ```az acr login --name <acrName>```
+- Get the login server address ```az acr list --resource-group myResourceGroup --query "[].{acrLoginServer:loginServer}" --output table```
+- Tag the classroom-rubyrails image, and we only need to push this image to ACR. ```docker tag classroom-rubyrails <acrLoginServer>/classroom-rubyrails:v1```
+- Push images to registry. ```docker push <acrLoginServer>/classroom-rubyrails:v1```
+- Create a service principle ```az ad sp create-for-rbac --skip-assignment```, remember the appId and password.
+- Configure ACR authentication: ```az acr show --resource-group myResourceGroup --name <acrName> --query "id" --output tsv```, ```az role assignment create --assignee <appId> --scope <acrId> --role acrpull```
+- Create a Kubenetes cluster. ```az aks create \
+    --resource-group myResourceGroup \
+    --name myAKSCluster \
+    --node-count 1 \
+    --service-principal <appId> \
+    --client-secret <password> \
+    --generate-ssh-keys```
+- Coneect to the cluster ```az aks get-credentials --resource-group myResourceGroup --name myAKSCluster```
+- Verify the connection ```kubectl get nodes```
+- Then we will need Kompose to translate the docker-compose file into Kubernetes resources. The main process follows this link [https://www.digitalocean.com/community/tutorials/how-to-migrate-a-docker-compose-workflow-to-kubernetes]. There are several ways to install Kompose: [https://github.com/kubernetes/kompose/blob/master/docs/installation.md#macos].
+- Step 1: Traslate docker-compose file into aks configuration file. ```kompose -f docker-compose-aks.yml convert```(We have created a new docker-compose-aks.yml file to implement the AKS deployment. You can find it in the root path of Github Classroom repo).
+- Step 2: Add the following code below the ports and resources fields and above the restartPolicy in the rubyrails-deployment.yaml file:
+```
+apiVersion: extensions/v1beta1
+kind: Deployment
+...
+    spec:
+      containers:
+      ...
+        name: nodejs
+        ports:
+        - containerPort: 8080
+        resources: {}
+
+      initContainers:
+      - name: init-postgres
+        image: busybox
+        command: ['sh', '-c', 'until nc -z db:2345; do echo waiting for postgres; sleep 2; done;']
+
+      restartPolicy: Always
+```
+This code is used for the main application to wait for the postgresql database to complete the initialization process.
+- Step 3: Modify the rubyrails-service.yaml file, specify LoadBalancer as the Service type:
+```
+apiVersion: v1
+kind: Service
+...
+spec:
+  type: LoadBalancer
+  ports:
+...
+```
+- Step 4: Run the following command to create the objects we've defined in the cluster.
+```kubectl create -f classroommaster-classroom-data-elasticsearch-data-persistentvolumeclaim.yaml,classroommaster-classroom-data-elasticsearch-logs-persistentvolumeclaim.yaml,classroommaster-classroom-data-postgres-data-persistentvolumeclaim.yaml,classroommaster-classroom-data-postgres-logs-persistentvolumeclaim.yaml,classroommaster-classroom-data-redis-data-persistentvolumeclaim.yaml,classroommaster-classroom-data-redis-logs-persistentvolumeclaim.yaml,elasticsearch-deployment.yaml,elasticsearch-service.yaml,memcached-deployment.yaml,memcached-service.yaml,postgresql-deployment.yaml,postgresql-service.yaml,redis-deployment.yaml,redis-service.yaml,rubyrails-deployment.yaml,rubyrails-service.yaml```
+- Step 5: Then you can use ```kubectl get deployment,svc,pods,pvc``` to check the deployment status. (We still stuck on this step)
+
+
 
 ### Development environment variables
 

@@ -1,0 +1,69 @@
+version: '2'
+services:
+  elasticsearch:
+    container_name: "classroom-elasticsearch"
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.3.2
+    ports:
+      - "9337:9300"
+      - "9227:9200"
+    volumes:
+      - classroom-data-elasticsearch-data:/usr/share/elasticsearch/data
+      - classroom-data-elasticsearch-logs:/user/share/elasticsearch/logs
+  
+  memcached:
+    container_name: "classroom-memcached"
+    image: memcached:1.4.26-alpine
+    ports:
+      - "22322:11211"
+
+  postgresql:
+    container_name: "classroom-postgresql"
+    image: postgres:9.4.10-alpine
+    ports:
+      - "2345:5432"
+    restart: always
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    volumes:
+      - classroom-data-postgres-data:/var/lib/postgresql/data
+      - classroom-data-postgres-logs:/var/log/postgresql
+
+  redis:
+    container_name: "classroom-redis"
+    image: redis:3.2.4-alpine
+    ports:
+      - "9736:6379"
+    volumes:
+      - classroom-data-redis-data:/var/lib/redis
+      - classroom-data-redis-logs:/var/log/redis
+
+  rubyrails:
+    container_name: "classroom-rubyrails"
+    image: classroomacr.azurecr.io/classroom-master_rubyrails:v1
+    ports: 
+      - "5000:5000"
+    tty: true
+    stdin_open: true
+    restart: always
+    entrypoint: bash
+    depends_on:
+      - postgresql
+      - redis
+      - memcached
+      - elasticsearch
+
+volumes:
+  classroom-data-elasticsearch-data:
+    external: false
+  classroom-data-postgres-data:
+    external: false
+  classroom-data-postgres-logs:
+    external: false
+  classroom-data-elasticsearch-logs:
+    external: false
+  classroom-data-redis-data:
+    external: false
+  classroom-data-redis-logs:
+    external: false
+
