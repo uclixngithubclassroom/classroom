@@ -192,7 +192,7 @@ Once that's done the script will kindly remind you to fill out you `.env` file i
 - Verify the connection ```kubectl get nodes```
 - Then we will need Kompose to translate the docker-compose file into Kubernetes resources. The main process follows this link [https://www.digitalocean.com/community/tutorials/how-to-migrate-a-docker-compose-workflow-to-kubernetes]. There are several ways to install Kompose: [https://github.com/kubernetes/kompose/blob/master/docs/installation.md#macos].
 - Step 1: Traslate docker-compose file into aks configuration file. ```kompose -f docker-compose-aks.yml convert```(We have created a new docker-compose-aks.yml file to implement the AKS deployment. You can find it in the root path of Github Classroom repo).
-- Step 2: Add the code below the ports and resources fields and above the restartPolicy in the rubyrails-deployment.yaml file:
+- Step 2: Add the code below the ports and resources fields and above the restartPolicy to the rubyrails-deployment.yaml file that just created:
 ```
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -214,7 +214,7 @@ kind: Deployment
 ```
 This code is used for the main application to wait for the postgresql database to complete the initialization process.
 
-Then add the initContainers part in the folloinng code to the elasticsearch-deployment.yaml file:
+Then add the initContainers part in the followinng code to the elasticsearch-deployment.yaml file:
 ```
 ...
 spec:
@@ -240,7 +240,7 @@ spec:
   volumes:
 ...
 ```
-This code is used for increase the virtual memory size to fit the elasticsearch requirement.
+This code is used to increase the virtual memory size to fit the elasticsearch requirement.
 
 - Step 3: Modify the rubyrails-service.yaml file, specify LoadBalancer as the Service type:
 ```
