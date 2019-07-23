@@ -192,7 +192,7 @@ Once that's done the script will kindly remind you to fill out you `.env` file i
 - Verify the connection ```kubectl get nodes```
 - Then we will need Kompose to translate the docker-compose file into Kubernetes resources. The main process follows this link [https://www.digitalocean.com/community/tutorials/how-to-migrate-a-docker-compose-workflow-to-kubernetes]. There are several ways to install Kompose: [https://github.com/kubernetes/kompose/blob/master/docs/installation.md#macos].
 - Step 1: Traslate docker-compose file into aks configuration file. ```kompose -f docker-compose-aks.yml convert```(We have created a new docker-compose-aks.yml file to implement the AKS deployment. You can find it in the root path of Github Classroom repo).
-- Step 2: Add the following code below the ports and resources fields and above the restartPolicy in the rubyrails-deployment.yaml file:
+- Step 2: Add the code below the ports and resources fields and above the restartPolicy in the rubyrails-deployment.yaml file:
 ```
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -204,15 +204,44 @@ kind: Deployment
         ports:
         - containerPort: 8080
         resources: {}
-
+      # below
       initContainers:
       - name: init-postgres
         image: busybox
         command: ['sh', '-c', 'until nc -z db:2345; do echo waiting for postgres; sleep 2; done;']
-
+      # above
       restartPolicy: Always
 ```
 This code is used for the main application to wait for the postgresql database to complete the initialization process.
+
+Then add the initContainers part in the folloinng code to the elasticsearch-deployment.yaml file:
+```
+...
+spec:
+  containers:
+  - image: docker.elastic.co/elasticsearch/elasticsearch:6.3.2
+    name: classroom-elasticsearch
+    ports:
+    - containerPort: 9300
+    - containerPort: 9200
+    resources: {}
+    volumeMounts:
+    - mountPath: /usr/share/elasticsearch/data
+      name: classroommaster-classroom-data-elasticsearch-data
+    - mountPath: /user/share/elasticsearch/logs
+      name: classroommaster-classroom-data-elasticsearch-logs
+  # below
+  initContainers:
+  - name: init-postgresql
+    image: busybox
+    command: ['sysctl', '-w', 'vm.max_map_count=262144']
+  # above
+  restartPolicy: Always
+  volumes:
+...
+```
+This code is used for increase the virtual memory size to fit the elasticsearch requirement.
+
 - Step 3: Modify the rubyrails-service.yaml file, specify LoadBalancer as the Service type:
 ```
 apiVersion: v1
