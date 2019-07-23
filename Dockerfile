@@ -39,9 +39,9 @@ WORKDIR /usr/src/app
 ADD .ruby-version .
 ADD script/bootstrap-sc .
 COPY vendor ./vendor
+COPY . /usr/src/app
 RUN dos2unix bootstrap-sc
 RUN bash bootstrap-sc
-COPY . /usr/src/app
 RUN find . -type f -exec dos2unix -q {} \;
 RUN ls -l
 
