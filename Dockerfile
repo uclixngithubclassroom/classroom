@@ -24,30 +24,27 @@ RUN apt install dos2unix
 
 RUN apt-get install -y --force-yes zlib1g-dev libpq-dev netcat rinetd libssl-dev libreadline-dev libyaml-dev libxml2-dev libxslt-dev
 
-
 RUN apt-get clean
 
 #In case a user is using Windows OS, this command has to be executed to convert all files 
 #to Unix format to prevent encoding errors.
 
-
-
-#RUN rbenv install --list
+RUN npm install npm@latest
 
 # app init
 WORKDIR /usr/src/app
 ADD .ruby-version .
 ADD script/bootstrap-sc .
+#Json file contains the node modules to be installed
+COPY package*.json ./
 COPY vendor ./vendor
+#COPY node_modules ./node_modules
 COPY . /usr/src/app
 RUN dos2unix bootstrap-sc
 RUN bash bootstrap-sc
+#"jquery.turbolinks": "git+https://git@github.com/kossnocorp/jquery.turbolinks#2.1.0",
 RUN find . -type f -exec dos2unix -q {} \;
 RUN ls -l
 
-
 #Startup script and port forwarding
-COPY config/rinetd.conf /etc/rinetd.conf
-
-
-
+COPY config/rinetd.conf /etc/rinetd.confs

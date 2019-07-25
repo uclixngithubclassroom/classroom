@@ -9,7 +9,7 @@ services:
     volumes:
       - classroom-data-elasticsearch-data:/usr/share/elasticsearch/data
       - classroom-data-elasticsearch-logs:/user/share/elasticsearch/logs
-  
+
   memcached:
     container_name: "classroom_memcached"
     image: memcached:1.4.26-alpine
