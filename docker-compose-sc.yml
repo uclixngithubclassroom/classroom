@@ -47,6 +47,7 @@ services:
       - .:/usr/src/app
       - /usr/src/app/.bundle
       - /usr/src/app/vendor
+      - /usr/src/app/node_modules
     ports: 
       - "5000:5000"
     entrypoint: bash

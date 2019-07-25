@@ -47,7 +47,6 @@ bin/rails log:clear tmp:clear
 echo "===> Restart application server..."
 bin/rails restart
 
-
 test -z "$RACK_ENV" &&
   RACK_ENV='development'
 

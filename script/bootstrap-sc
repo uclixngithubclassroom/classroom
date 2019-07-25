@@ -39,8 +39,8 @@ bundle check 2>&1 || {
 }
 
 #install yarn dependencies
-echo "==> Installing javascript dependencies..."
-yarnpkg install
+# echo "==> Installing javascript dependencies..."
+# yarnpkg install
 
 # Install all of our JS dependencies if we need to
 ./bin/yarn check 2>&1 || {

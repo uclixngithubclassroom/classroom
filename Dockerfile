@@ -45,4 +45,4 @@ RUN find . -type f -exec dos2unix -q {} \;
 RUN ls -l
 
 #Startup script and port forwarding
-COPY config/rinetd.conf /etc/rinetd.confs
+COPY config/rinetd.conf /etc/rinetd.conf
