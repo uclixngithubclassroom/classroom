@@ -8,6 +8,7 @@ RUN printf "deb http://archive.debian.org/debian/ jessie main\ndeb-src http://ar
 
 # install rubenv
 RUN wget -q https://github.com/rbenv/rbenv-installer/raw/master/bin/rbenv-installer -O- | bash
+RUN apt-get update -qq && apt-get install -y apt-transport-https
 
 # install yarn and node
 RUN wget -q https://deb.nodesource.com/setup_10.x -O- | bash -
