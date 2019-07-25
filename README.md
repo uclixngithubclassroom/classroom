@@ -153,7 +153,7 @@ Once that's done the script will kindly remind you to fill out you `.env` file i
   - Navigate to the cloned folder
   - Download Docker Toolbox v18.09.3 from the following link [https://github.com/docker/toolbox/releases]. After the installation process make sure that you execute the Docker Quickstart Terminal or alternatively run the command ```docker-machine run default``` from the Powershell.
   - Make sure that the VM has enough memory to run the container. You can ensure this by connecting to the VM and increasing the memory allocated for it by ```docker-machine ssh```. Afterwards, inside the VM increase the memory by executing ```sudo sysctl -w vm.max_map_count=262144``` 
-  - Fill out the environment variables inside the .env file in the root path of the Github Classroom. You can modify it by entering ```nano .env```in the terminal.
+  - Fill out the environment variables inside the .env file in the root path of the Github Classroom. You can modify it by entering ```notepad .env```in the PowerShell, .env file will be opened in Notepad for you to fill the details.
   - Run the command ```docker-compose -f docker-compose-sc.yml up --build```, In order to build the Docker Image and run the containers. (We write a new docker-compose-sc.yml file to implement the dockerization.)
 
  #### Linux
