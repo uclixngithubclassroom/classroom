@@ -3,8 +3,9 @@
 class User < ApplicationRecord
   include Flippable
   include GraphQLNode
+  include StafftoolsSearchable
 
-  update_index("user#user") { self }
+  define_pg_search(columns: %i[id uid github_login github_name])
 
   has_many :assignment_repos
   has_many :repo_accesses, dependent: :destroy
@@ -48,7 +49,7 @@ class User < ApplicationRecord
   end
 
   def github_user
-    @github_user ||= GitHubUser.new(github_client, uid)
+    @github_user ||= GitHubUser.new(github_client, uid, classroom_resource: self)
   end
 
   def github_client_scopes

@@ -102,15 +102,23 @@ class OrganizationsController < Orgs::Controller
     end
   end
 
+  # rubocop:disable MethodLength
   def search
-    orgs_found = current_user.organizations.order(:id).where("title LIKE ?", "%#{params[:query]}%")
+    @organizations = current_user
+      .organizations
+      .order(:id)
+      .where("title ILIKE ?", "%#{params[:query]}%")
+      .page(params[:page])
+      .per(12)
+
     respond_to do |format|
       format.html do
         render partial: "organizations/organization_card_layout",
-               locals: { organizations: orgs_found.page(params[:page]).per(12) }
+               locals: { organizations: @organizations }
       end
     end
   end
+  # rubocop:enable MethodLength
 
   private
 
@@ -172,9 +180,19 @@ class OrganizationsController < Orgs::Controller
   end
 
   def update_organization_params
+    add_archive_params
     params
       .require(:organization)
-      .permit(:title)
+      .permit(:title, :archived_at)
+  end
+
+  def add_archive_params
+    org_params = params[:organization]
+    if org_params[:archived] == "true"
+      org_params[:archived_at] = Time.zone.now
+    elsif org_params[:archived] == "false"
+      org_params[:archived_at] = nil
+    end
   end
 
   def verify_user_belongs_to_organization

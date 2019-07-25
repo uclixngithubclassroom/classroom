@@ -5,6 +5,7 @@ class GitHubRepository < GitHubResource
   depends_on :import
 
   DEFAULT_LABEL_COLOR = "ffffff"
+  TEMPLATE_REPOS_API_PREVIEW = "application/vnd.github.baptiste-preview"
 
   # NOTE: LEGACY, DO NOT REMOVE.
   # This is needed for the lib/collab_migration.rb
@@ -161,7 +162,11 @@ class GitHubRepository < GitHubResource
   end
 
   def empty?
-    number_of_commits.zero?
+    GitHub::Errors.with_error_handling do
+      @client.contents(@id).empty?
+    end
+  rescue GitHub::Error
+    return true
   end
 
   def commits_url(branch)
@@ -222,6 +227,11 @@ class GitHubRepository < GitHubResource
 
       clone_url.to_s
     end
+  end
+
+  def template?
+    options = { accept: TEMPLATE_REPOS_API_PREVIEW, headers: GitHub::APIHeaders.no_cache_no_store }
+    @client.repository(@id, options).is_template
   end
 
   private

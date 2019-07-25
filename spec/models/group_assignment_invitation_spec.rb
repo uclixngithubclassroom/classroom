@@ -8,6 +8,29 @@ RSpec.describe GroupAssignmentInvitation, type: :model do
     expect(group_assignment_invitation.key).to_not be_nil
   end
 
+  describe ".search" do
+    let(:invitation) { create(:group_assignment_invitation) }
+
+    before do
+      expect(invitation).to_not be_nil
+    end
+
+    it "searches by id" do
+      results = GroupAssignmentInvitation.search(invitation.id)
+      expect(results.to_a).to include(invitation)
+    end
+
+    it "searches by key" do
+      results = GroupAssignmentInvitation.search(invitation.key)
+      expect(results.to_a).to include(invitation)
+    end
+
+    it "does not return the assignment when it shouldn't" do
+      results = GroupAssignmentInvitation.search("spaghetto")
+      expect(results.to_a).to_not include(invitation)
+    end
+  end
+
   describe "short_key" do
     it "allows multiple invitations with nil short_key" do
       first_inv = create(:group_assignment_invitation)
@@ -82,14 +105,6 @@ RSpec.describe GroupAssignmentInvitation, type: :model do
     end
 
     describe "import resiliency enabled" do
-      before do
-        GitHubClassroom.flipper[:group_import_resiliency].enable
-      end
-
-      after do
-        GitHubClassroom.flipper[:group_import_resiliency].disable
-      end
-
       it "pending?" do
         result = subject.redeem_for(student, nil, group_name)
         expect(result.pending?).to be_truthy

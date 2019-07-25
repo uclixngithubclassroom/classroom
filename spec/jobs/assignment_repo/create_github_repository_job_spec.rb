@@ -134,18 +134,19 @@ RSpec.describe AssignmentRepo::CreateGitHubRepositoryJob, type: :job do
           text: subject::IMPORT_STARTER_CODE,
           status: "importing_starter_code",
           status_text: "Import started",
-          repo_url: "https://github.com/#{organization.github_organization.login}/learn-elm-EDONTestTeacher"
+          repo_url: "https://github.com/#{organization.github_organization.login}/learn-elm-"\
+            "#{teacher.github_user.login}"
         )
     end
 
     it "tracks create success stat" do
-      expect(GitHubClassroom.statsd).to receive(:increment).with("v2_exercise_repo.create.success")
+      expect(GitHubClassroom.statsd).to receive(:increment).with("exercise_repo.create.success")
       expect(GitHubClassroom.statsd).to receive(:increment).with("exercise_repo.import.started")
       subject.perform_now(assignment, teacher)
     end
 
     it "tracks how long it too to be created" do
-      expect(GitHubClassroom.statsd).to receive(:timing)
+      expect(GitHubClassroom.statsd).to receive(:timing).with("exercise_repo.create.time.with_importer", anything)
       subject.perform_now(assignment, teacher)
     end
   end
@@ -154,8 +155,7 @@ RSpec.describe AssignmentRepo::CreateGitHubRepositoryJob, type: :job do
     it "tracks create fail stat" do
       stub_request(:post, github_url("/organizations/#{organization.github_id}/repos"))
         .to_return(body: "{}", status: 401)
-
-      expect(GitHubClassroom.statsd).to receive(:increment).with("v2_exercise_repo.create.repo.fail")
+      expect(GitHubClassroom.statsd).to receive(:increment).with("exercise_repo.create.repo.fail")
       expect(GitHubClassroom.statsd).to receive(:increment).with("github.error.Unauthorized")
       subject.perform_now(assignment, student)
     end
@@ -175,10 +175,12 @@ RSpec.describe AssignmentRepo::CreateGitHubRepositoryJob, type: :job do
           repo_url: nil
         )
         .with(
-          error: AssignmentRepo::Creator::REPOSITORY_CREATION_FAILED,
-          status: "errored_creating_repo",
-          status_text: "Failed",
-          repo_url: nil
+          hash_including(
+            :error,
+            status: "errored_creating_repo",
+            status_text: "Failed",
+            repo_url: nil
+          )
         )
     end
 
@@ -224,10 +226,12 @@ RSpec.describe AssignmentRepo::CreateGitHubRepositoryJob, type: :job do
             repo_url: nil
           )
           .with(
-            error: AssignmentRepo::Creator::REPOSITORY_STARTER_CODE_IMPORT_FAILED,
-            status: "errored_creating_repo",
-            status_text: "Failed",
-            repo_url: nil
+            hash_including(
+              :error,
+              status: "errored_creating_repo",
+              status_text: "Failed",
+              repo_url: nil
+            )
           )
       end
 
@@ -238,7 +242,7 @@ RSpec.describe AssignmentRepo::CreateGitHubRepositoryJob, type: :job do
 
         expect(Rails.logger)
           .to receive(:warn)
-          .with(AssignmentRepo::Creator::REPOSITORY_STARTER_CODE_IMPORT_FAILED)
+          .with(a_string_starting_with(AssignmentRepo::Creator::REPOSITORY_STARTER_CODE_IMPORT_FAILED))
         subject.perform_now(assignment, student)
       end
 
@@ -246,13 +250,12 @@ RSpec.describe AssignmentRepo::CreateGitHubRepositoryJob, type: :job do
         import_regex = %r{#{github_url("/repositories/")}\d+/import$}
         stub_request(:put, import_regex)
           .to_return(body: "{}", status: 401)
-
+        expect(GitHubClassroom.statsd)
+          .to receive(:increment)
+          .with("exercise_repo.create.importing_starter_code.fail")
         expect(GitHubClassroom.statsd)
           .to receive(:increment)
           .with("github.error.Unauthorized")
-        expect(GitHubClassroom.statsd)
-          .to receive(:increment)
-          .with("v2_exercise_repo.create.importing_starter_code.fail")
         subject.perform_now(assignment, student)
       end
 
@@ -272,10 +275,12 @@ RSpec.describe AssignmentRepo::CreateGitHubRepositoryJob, type: :job do
             repo_url: nil
           )
           .with(
-            error: AssignmentRepo::Creator::REPOSITORY_COLLABORATOR_ADDITION_FAILED,
-            status: "errored_creating_repo",
-            status_text: "Failed",
-            repo_url: nil
+            hash_including(
+              :error,
+              status: "errored_creating_repo",
+              status_text: "Failed",
+              repo_url: nil
+            )
           )
       end
 
@@ -286,7 +291,7 @@ RSpec.describe AssignmentRepo::CreateGitHubRepositoryJob, type: :job do
 
         expect(Rails.logger)
           .to receive(:warn)
-          .with(AssignmentRepo::Creator::REPOSITORY_COLLABORATOR_ADDITION_FAILED)
+          .with(a_string_starting_with(AssignmentRepo::Creator::REPOSITORY_COLLABORATOR_ADDITION_FAILED))
         subject.perform_now(assignment, student)
       end
 
@@ -294,13 +299,8 @@ RSpec.describe AssignmentRepo::CreateGitHubRepositoryJob, type: :job do
         repo_invitation_regex = %r{#{github_url("/repositories/")}\d+/collaborators/.+$}
         stub_request(:put, repo_invitation_regex)
           .to_return(body: "{}", status: 401)
-
-        expect(GitHubClassroom.statsd)
-          .to receive(:increment)
-          .with("github.error.Unauthorized")
-        expect(GitHubClassroom.statsd)
-          .to receive(:increment)
-          .with("v2_exercise_repo.create.adding_collaborator.fail")
+        expect(GitHubClassroom.statsd).to receive(:increment).with("exercise_repo.create.adding_collaborator.fail")
+        expect(GitHubClassroom.statsd).to receive(:increment).with("github.error.Unauthorized")
         subject.perform_now(assignment, student)
       end
 
@@ -318,10 +318,12 @@ RSpec.describe AssignmentRepo::CreateGitHubRepositoryJob, type: :job do
             repo_url: nil
           )
           .with(
-            error: AssignmentRepo::Creator::DEFAULT_ERROR_MESSAGE,
-            status: "errored_creating_repo",
-            status_text: "Failed",
-            repo_url: nil
+            hash_including(
+              :error,
+              status: "errored_creating_repo",
+              status_text: "Failed",
+              repo_url: nil
+            )
           )
       end
 
@@ -333,14 +335,13 @@ RSpec.describe AssignmentRepo::CreateGitHubRepositoryJob, type: :job do
           .with("Record invalid")
         expect(Rails.logger)
           .to receive(:warn)
-          .with(AssignmentRepo::Creator::DEFAULT_ERROR_MESSAGE)
+          .with(a_string_starting_with(AssignmentRepo::Creator::DEFAULT_ERROR_MESSAGE))
         subject.perform_now(assignment, student)
       end
 
       it "fails to save the AssignmentRepo and reports" do
         allow_any_instance_of(AssignmentRepo).to receive(:save!).and_raise(ActiveRecord::RecordInvalid)
-
-        expect(GitHubClassroom.statsd).to receive(:increment).with("v2_exercise_repo.create.fail")
+        expect(GitHubClassroom.statsd).to receive(:increment).with("exercise_repo.create.fail")
         subject.perform_now(assignment, student)
       end
     end

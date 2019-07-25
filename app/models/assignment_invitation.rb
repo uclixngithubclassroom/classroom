@@ -2,10 +2,11 @@
 
 class AssignmentInvitation < ApplicationRecord
   include ShortKey
+  include StafftoolsSearchable
+
+  define_pg_search(columns: %i[id key])
 
   default_scope { where(deleted_at: nil) }
-
-  update_index("assignment_invitation#assignment_invitation") { self }
 
   belongs_to :assignment
 
@@ -28,9 +29,7 @@ class AssignmentInvitation < ApplicationRecord
   #
   # Returns a AssignmentRepo::Creator::Result.
   #
-  # rubocop:disable MethodLength
-  # rubocop:disable AbcSize
-  def redeem_for(invitee, import_resiliency: false)
+  def redeem_for(invitee)
     if (repo_access = RepoAccess.find_by(user: invitee, organization: organization))
       assignment_repo = AssignmentRepo.find_by(assignment: assignment, repo_access: repo_access)
       return AssignmentRepo::Creator::Result.success(assignment_repo) if assignment_repo.present?
@@ -41,14 +40,8 @@ class AssignmentInvitation < ApplicationRecord
 
     return AssignmentRepo::Creator::Result.failed("Invitations for this assignment have been disabled.") unless enabled?
 
-    if import_resiliency
-      AssignmentRepo::Creator::Result.pending
-    else
-      AssignmentRepo::Creator.perform(assignment: assignment, user: invitee)
-    end
+    AssignmentRepo::Creator::Result.pending
   end
-  # rubocop:enable MethodLength
-  # rubocop:enable AbcSize
 
   def to_param
     key

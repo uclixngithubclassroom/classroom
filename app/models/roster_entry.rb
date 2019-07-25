@@ -2,6 +2,10 @@
 
 class RosterEntry < ApplicationRecord
   class IdentifierCreationError < StandardError; end
+
+  include Sortable
+  include Searchable
+
   belongs_to :roster
   belongs_to :user, optional: true
 
@@ -9,6 +13,33 @@ class RosterEntry < ApplicationRecord
   validates :roster,     presence: true
 
   before_create :validate_identifiers_are_unique_to_roster
+
+  scope :order_by_repo_created_at, lambda { |context|
+    assignment = context[:assignment]
+    sql_formatted_assignment_id = assignment.id
+
+    order("assignment_repos.created_at")
+      .joins <<~SQL
+        LEFT OUTER JOIN assignment_repos
+        ON roster_entries.user_id = assignment_repos.user_id
+        AND assignment_repos.assignment_id='#{sql_formatted_assignment_id}'
+      SQL
+  }
+
+  scope :order_by_student_identifier, ->(_context = nil) { order(identifier: :asc) }
+
+  scope :search_by_student_identifier, ->(query) { where("identifier ILIKE ?", "%#{query}%") }
+
+  def self.sort_modes
+    {
+      "Student identifier" => :order_by_student_identifier,
+      "Created at" => :order_by_repo_created_at
+    }
+  end
+
+  def self.search_mode
+    :search_by_student_identifier
+  end
 
   # rubocop:disable Metrics/MethodLength, Metrics/AbcSize, Metrics/CyclomaticComplexity
   def self.to_csv(user_to_group_map = {})
@@ -49,7 +80,6 @@ class RosterEntry < ApplicationRecord
         WHEN roster_entries.user_id IN #{sql_formatted_users} THEN 0 /* Accepted */
         ELSE 1                                                       /* Linked but not accepted */
       END
-      , id
     SQL
   end
 
@@ -72,11 +102,11 @@ class RosterEntry < ApplicationRecord
   # Returns the created entries.
 
   # rubocop:disable Metrics/MethodLength
-  def self.create_entries(identifiers:, roster:)
+  def self.create_entries(identifiers:, roster:, google_user_ids: [])
     created_entries = []
     RosterEntry.transaction do
-      identifiers.each do |identifier|
-        roster_entry = RosterEntry.create(identifier: identifier, roster: roster)
+      identifiers.zip(google_user_ids).each do |identifier, google_user_id|
+        roster_entry = RosterEntry.create(identifier: identifier, roster: roster, google_user_id: google_user_id)
 
         if !roster_entry.persisted?
           raise IdentifierCreationError unless roster_entry.errors.include?(:identifier)
