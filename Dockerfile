@@ -38,11 +38,9 @@ ADD script/bootstrap-sc .
 #Json file contains the node modules to be installed
 COPY package*.json ./
 COPY vendor ./vendor
-#COPY node_modules ./node_modules
 COPY . /usr/src/app
 RUN dos2unix bootstrap-sc
 RUN bash bootstrap-sc
-#"jquery.turbolinks": "git+https://git@github.com/kossnocorp/jquery.turbolinks#2.1.0",
 RUN find . -type f -exec dos2unix -q {} \;
 RUN ls -l
 
