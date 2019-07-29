@@ -148,6 +148,18 @@ script/setup
 Once that's done the script will kindly remind you to fill out you `.env` file inside the repository, this is the breakdown.
 
 ## UCL Docker Deployment 
+
+#### Known Issues for Windows
+  - Since this project was not previously made for the Windows OS, some filepaths exceeds 260 character limit. To be able to clone the repository. 
+    --Firstly, run the command ```git config --system core.longpaths true```.
+    
+  - If this does not fix the long filename issue for you try the following steps
+    ..- Open the Windows Start menu and type ```regedit.``` Launch the application.
+    ..- Navigate to HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem
+    ..- Right-click the value “LongPathsEnabled” and select Modify.
+    ..- Change “Value data” from 0 to 1.
+    ..- Click OK.
+
  #### Windows
   - Clone the repository.
   - Navigate to the cloned folder
