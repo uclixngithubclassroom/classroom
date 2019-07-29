@@ -52,3 +52,4 @@ bundle check 2>&1 || {
 # RUN npm ci --only=production for production code.
 echo "==> Installing node.js dependencies..."
 npm install
+
