@@ -40,7 +40,7 @@ services:
 
   rubyrails:
     container_name: "classroom-rubyrails"
-    image: classroomacr.azurecr.io/classroom-master_rubyrails:v1
+    image: classroomacr.azurecr.io/classroom_rubyrails
     ports: 
       - "5000:5000"
     tty: true

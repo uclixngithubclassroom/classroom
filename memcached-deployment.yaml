@@ -1,0 +1,27 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose -f docker-compose-aks.yml convert
+    kompose.version: 1.18.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: memcached
+  name: memcached
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: memcached
+    spec:
+      containers:
+      - image: memcached:1.4.26-alpine
+        name: classroom-memcached
+        ports:
+        - containerPort: 11211
+        resources: {}
+      restartPolicy: Always
+status: {}

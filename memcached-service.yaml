@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose -f docker-compose-aks.yml convert
+    kompose.version: 1.18.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: memcached
+  name: memcached
+spec:
+  ports:
+  - name: "22322"
+    port: 22322
+    targetPort: 11211
+  selector:
+    io.kompose.service: memcached
+status:
+  loadBalancer: {}

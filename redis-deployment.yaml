@@ -1,0 +1,40 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose -f docker-compose-aks.yml convert
+    kompose.version: 1.18.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: redis
+  name: redis
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: redis
+    spec:
+      containers:
+      - image: redis:3.2.4-alpine
+        name: classroom-redis
+        ports:
+        - containerPort: 6379
+        resources: {}
+        volumeMounts:
+        - mountPath: /var/lib/redis
+          name: classroom-classroom-data-redis-data
+        - mountPath: /var/log/redis
+          name: classroom-classroom-data-redis-logs
+      restartPolicy: Always
+      volumes:
+      - name: classroom-classroom-data-redis-data
+        persistentVolumeClaim:
+          claimName: classroom-classroom-data-redis-data
+      - name: classroom-classroom-data-redis-logs
+        persistentVolumeClaim:
+          claimName: classroom-classroom-data-redis-logs
+status: {}

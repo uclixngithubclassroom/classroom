@@ -1,0 +1,45 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose -f docker-compose-aks.yml convert
+    kompose.version: 1.18.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: postgresql
+  name: postgresql
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: postgresql
+    spec:
+      containers:
+      - env:
+        - name: POSTGRES_PASSWORD
+          value: postgres
+        - name: POSTGRES_USER
+          value: postgres
+        image: postgres:9.4.10-alpine
+        name: classroom-postgresql
+        ports:
+        - containerPort: 5432
+        resources: {}
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: classroom-classroom-data-postgres-data
+        - mountPath: /var/log/postgresql
+          name: classroom-classroom-data-postgres-logs
+      restartPolicy: Always
+      volumes:
+      - name: classroom-classroom-data-postgres-data
+        persistentVolumeClaim:
+          claimName: classroom-classroom-data-postgres-data
+      - name: classroom-classroom-data-postgres-logs
+        persistentVolumeClaim:
+          claimName: classroom-classroom-data-postgres-logs
+status: {}
