@@ -135,23 +135,7 @@ If you're running an Debian/Ubuntu based GNU/Linux for example run: `apt-get ins
 
 #### Windows
 
-GitHub class doesn't have a good story for running on Windows, so for windows 10+ Enterprise and Professional versions only, users can use subsystem of Ubuntu to deploy it locally.
-
-##### Download Subsystem
-Download subsystem from Microsoft store. Here is the guide: https://docs.microsoft.com/en-us/windows/wsl/install-win10
-Before that, make sure the Windows Subsystem for Linux optional component is not enabled:
-Windows + R -> optionalfeatures.exe -> enable Windows Subsystem for Linux optional
-##### Installing Docker and Docker Compose
- Here is the guide for installing the Docker client on Windows Subsystem for Linux (Ubuntu): https://medium.com/@sebagomez/installing-the-docker-client-on-ubuntus-windows-subsystem-for-linux-612b392a44c4
- After the Docker desktop is installed, right click it -> Settings -> General -> check "Expose daemon on tcp://localhost:2375 without TLS"
-##### Install Ruby on Rails 
-Install Ruby on Rails with rbenv on the subsystem (Ubuntu). Here is the guide you can follow: https://www.digitalocean.com/community/tutorials/how-to-install-ruby-on-rails-with-rbenv-on-ubuntu-18-04
-
-run source ~/.bashrc 
-
- 
-
-
+We really don't have a good story for running this on Windows, but Pull Requests are welcome :smile:
 
 ### Setup GitHub Classroom
 
