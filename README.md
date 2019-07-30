@@ -147,7 +147,7 @@ script/setup
 
 Once that's done the script will kindly remind you to fill out you `.env` file inside the repository, this is the breakdown.
 
-## UCL Docker Deployment 
+## Deploying Github Classroom on Docker 
 
 #### Known Issues for Windows
   - Since this project was not previously made for the Windows OS, some filepaths exceeds 260 character limit. To be able to clone the repository. 

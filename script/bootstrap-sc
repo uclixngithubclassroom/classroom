@@ -39,14 +39,14 @@ bundle check 2>&1 || {
 }
 
 #install yarn dependencies
-# echo "==> Installing javascript dependencies..."
-# yarnpkg install
+echo "==> Installing javascript dependencies..."
+yarnpkg install
 
 # Install all of our JS dependencies if we need to
-./bin/yarn check 2>&1 || {
- echo "==> Installing javascript dependencies..."
- ./bin/yarn install
-}
+#./bin/yarn check 2>&1 || {
+# echo "==> Installing javascript dependencies..."
+# ./bin/yarn install
+#}
 
 # npm install uses package.json to install the dependencies mentioned in the json file
 # RUN npm ci --only=production for production code.
