@@ -47,6 +47,7 @@ echo "App Id -> $APP_ID"
 echo "App password -> $APP_PW"
 
 # Create an Azure Kubernetes Service inside the Resource Group
+echo "Creating AKS Cluster in the Resource Group -->"
 az aks create --resource-group $RESOURCE_GROUP_NAME --name $AKS_CLUSTER_NAME --node-count 3 --service-principal $APP_ID  --client-secret $APP_PW --generate-ssh-keys
 
 # Get client id
