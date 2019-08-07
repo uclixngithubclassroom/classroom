@@ -37,10 +37,14 @@ az acr build --file Dockerfile --registry $ACR_NAME --image classroom_rubyrails 
 # Create Service Principle
 SERVICE_PRINCIPLE=$(az ad sp create-for-rbac --skip-assignment)
 
-echo "SERVICE_PRINCIPLE -> $SERVICE_PRINCIPLE"
+echo "SERVICE_PRINCIPLE -> $SERVICE_PRINCIPLE"/
 
+# Parse JSON and get appId
+APP_ID=$(jq 'appId' $SERVICE_PRINCIPLE) 
 
-#get client id
+echo "App Id -> $APP_ID"
+
+# Get client id
 CLIENT_ID=$(az aks show --resource-group $RESOURCE_GROUP_NAME --name $AKS_CLUSTER_NAME --query "servicePrincipalProfile.clientId" --output tsv)
 
 echo "Client ID -> $CLIENT_ID"
