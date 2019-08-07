@@ -12,11 +12,20 @@ cd "$(dirname "$0")/.."
 unset BUNDLER_VERSION
 if ! pgrep -x 'rinetd' > /dev/null
 then
+  echo "===> Forwarding ports..."
   rinetd
 fi
 
 echo "===> Preparing database..."
-bin/rails db:setup
+# env VERBOSE=true bin/rails db:setup --trace
+
+echo "===> Create database..."
+bin/rails db:create
+echo "===> Load Schema..."
+env DISABLE_DATABASE_ENVIRONMENT_CHECK=1 bin/rails db:schema:load
+echo "===> Migrate database..."
+bin/rails db:migrate
+bin/rails db:seed
 
 echo "===> Remove old logs and tempfiles..."
 bin/rails log:clear tmp:clear
@@ -37,18 +46,6 @@ fi
 
 echo "===> Waiting for the containers to mount..."
 sleep 5
-
-echo "==> Updating database..."
-bin/rake db:migrate db:test:prepare
-
-echo "===> Remove old logs and tempfiles..."
-bin/rails log:clear tmp:clear
-
-echo "===> Restart application server..."
-bin/rails restart
-
-test -z "$RACK_ENV" &&
-  RACK_ENV='development'
 
 # boot the app and any other necessary processes.
 bundle exec foreman start -f Procfile.dev.sc

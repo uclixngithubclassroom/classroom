@@ -30,7 +30,7 @@ Rails.application.configure do
   # config.assets.css_compressor = :sass
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
-  config.assets.compile = false
+  # config.assets.compile = false
 
   # `config.assets.precompile` and `config.assets.version` have moved to config/initializers/assets.rb
 
@@ -47,7 +47,7 @@ Rails.application.configure do
   # config.action_cable.allowed_request_origins = [ 'http://example.com', /http:\/\/example.*/ ]
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  config.force_ssl = true
+  # config.force_ssl = true
 
   # Use the lowest log level to ensure availability of diagnostic information
   # when problems arise.
@@ -56,13 +56,6 @@ Rails.application.configure do
   # Prepend all log lines with the following tags.
   config.log_tags = [:request_id]
 
-  # Use a different cache store in production.
-  memcachedcloud_servers = ENV["MEMCACHEDCLOUD_SERVERS"].split(",")
-
-  dalli_store_name_and_password = {
-    username: ENV["MEMCACHEDCLOUD_USERNAME"],
-    password: ENV["MEMCACHEDCLOUD_PASSWORD"]
-  }
 
   dalli_store_config = {
     namespace:  "CLASSROOM",
@@ -70,13 +63,35 @@ Rails.application.configure do
     pool_size:  (ENV.fetch("RAILS_MAX_THREADS") { 5 })
   }
 
-  config.cache_store = :dalli_store,
-                       memcachedcloud_servers,
-                       dalli_store_name_and_password.merge(dalli_store_config)
+  
 
-  config.peek.adapter = :memcache, {
-    client: Dalli::Client.new(memcachedcloud_servers, dalli_store_name_and_password)
-  }
+  if ENV.fetch('DEPLOY_ON_AZURE') { 'false' } == 'true'
+    memcached_url = "memcached:22322"
+    config.cache_store = :dalli_store, memcached_url, dalli_store_config
+
+    config.peek.adapter = :memcache, {
+      client: Dalli::Client.new(memcached_url)
+    }
+  else
+    # Use a different cache store in production.
+    memcachedcloud_servers = ENV["MEMCACHEDCLOUD_SERVERS"].split(",")
+
+    dalli_store_name_and_password = {
+      username: ENV["MEMCACHEDCLOUD_USERNAME"],
+      password: ENV["MEMCACHEDCLOUD_PASSWORD"]
+    }
+
+
+    config.cache_store = :dalli_store,
+                         memcachedcloud_servers,
+                         dalli_store_name_and_password.merge(dalli_store_config)
+
+    config.peek.adapter = :memcache, {
+      client: Dalli::Client.new(memcachedcloud_servers, dalli_store_name_and_password)
+    }
+  end
+
+
 
   # Use a real queuing backend for Active Job (and separate queues per environment)
   # config.active_job.queue_adapter     = :resque

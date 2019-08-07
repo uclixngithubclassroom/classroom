@@ -24,7 +24,10 @@ spec:
           value: postgres
         - name: POSTGRES_USER
           value: postgres
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
         image: postgres:9.4.10-alpine
+        imagePullPolicy: IfNotPresent
         name: classroom-postgresql
         ports:
         - containerPort: 5432
@@ -34,6 +37,8 @@ spec:
           name: classroom-classroom-data-postgres-data
         - mountPath: /var/log/postgresql
           name: classroom-classroom-data-postgres-logs
+      securityContext:
+        fsGroup: 1000
       restartPolicy: Always
       volumes:
       - name: classroom-classroom-data-postgres-data

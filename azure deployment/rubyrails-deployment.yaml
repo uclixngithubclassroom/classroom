@@ -1,0 +1,54 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose -f docker-compose-aks.yml convert
+    kompose.version: 1.18.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: rubyrails
+  name: rubyrails
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: rubyrails
+    spec:
+      containers:
+      - command:
+        - bash
+        image: classroomacr.azurecr.io/classroom_rubyrails
+        name: classroom-rubyrails
+        command: ["/bin/sh", "-c"]
+        args: ["/usr/src/app/script/run;"]
+        env:
+        - name: 'FOUNDELASTICSEARCH_URL'
+          value: 'elasticsearch:9227'
+        - name: 'DATABASE_URL'
+          value: 'postgres://postgres:postgres@postgresql:2345'
+        - name: 'REDIS_URL'
+          value: 'redis://redis:9736/0'
+        - name: 'RAILS_ENV'
+          value: 'production'
+        - name: 'DEPLOY_ON_AZURE'
+          value: 'true'
+        - name: 'AIRBRAKE_PROJECT_ID'
+          value: '238971'
+        - name: 'AIRBRAKE_PROJECT_KEY'
+          value: 'a3028a6657c6305de9b61e8be96ed59f'
+        - name: 'SECRET_KEY_BASE'
+          value: '610823461484812c67d7e732168014abd344a91b0e2b658d5f64f2f29372abafc999184fc362eb5a6e21f274200f801cd0fe7ea3cce24def5b21b617ff304ddd'
+        ports:
+        - containerPort: 5000
+        resources: {}
+      initContainers:
+      - name: init-postgres
+        image: busybox
+        command: ['sh', '-c', 'until nc -z postgresql:2345; do echo waiting for postgresql; sleep 2; done;']
+        stdin: true
+        tty: true
+      restartPolicy: Always
+status: {}
