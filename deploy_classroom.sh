@@ -43,10 +43,6 @@ APP_PW=$(jq -r '.password' <<< "$SERVICE_PRINCIPLE")
 echo "App Id -> $APP_ID"
 echo "App password -> $APP_PW"
 
-# Create an Azure Kubernetes Service inside the Resource Group
-echo "Creating AKS Cluster in the Resource Group -->"
-az aks create --resource-group $RESOURCE_GROUP_NAME --name $AKS_CLUSTER_NAME --node-count 3 --service-principal $APP_ID  --client-secret $APP_PW --generate-ssh-keys
-
 # Build docker image on acr
 az acr build --file Dockerfile --registry $ACR_NAME --image classroom_rubyrails .
 
@@ -63,12 +59,12 @@ echo "ACR ID -> $ACR_ID"
 # Create role assignment
 az role assignment create --assignee $CLIENT_ID --role acrpull --scope $ACR_ID -g
 
-
-# Create AKS Cluster
-
-
 # Connect to cluster
 az aks get-credentials --resource-group $RESOURCE_GROUP_NAME --name $AKS
+
+# Create an Azure Kubernetes Service inside the Resource Group
+echo "Creating AKS Cluster in the Resource Group -->"
+az aks create --resource-group $RESOURCE_GROUP_NAME --name $AKS_CLUSTER_NAME --node-count 3 --service-principal $APP_ID  --client-secret $APP_PW --generate-ssh-keys
 
 # Deploy it on AKS
 kubectl create -f classroom-classroom-data-elasticsearch-data-persistentvolumeclaim.yaml,classroom-classroom-data-elasticsearch-logs-persistentvolumeclaim.yaml,classroom-classroom-data-postgres-data-persistentvolumeclaim.yaml,classroom-classroom-data-postgres-logs-persistentvolumeclaim.yaml,classroom-classroom-data-redis-data-persistentvolumeclaim.yaml,classroom-classroom-data-redis-logs-persistentvolumeclaim.yaml,elasticsearch-deployment.yaml,elasticsearch-service.yaml,memcached-deployment.yaml,memcached-service.yaml,postgresql-deployment.yaml,postgresql-service.yaml,redis-deployment.yaml,redis-service.yaml,rubyrails-deployment.yaml,rubyrails-service.yaml
