@@ -31,9 +31,6 @@ az acr create --resource-group $RESOURCE_GROUP_NAME --name $ACR_NAME --sku Basic
 echo "Login in to ACR -->"
 az acr login --name $ACR_NAME
 
-# Build docker image on acr
-az acr build --file Dockerfile --registry $ACR_NAME --image classroom_rubyrails .
-
 # Create Service Principle
 SERVICE_PRINCIPLE=$(az ad sp create-for-rbac --skip-assignment)
 
@@ -49,6 +46,9 @@ echo "App password -> $APP_PW"
 # Create an Azure Kubernetes Service inside the Resource Group
 echo "Creating AKS Cluster in the Resource Group -->"
 az aks create --resource-group $RESOURCE_GROUP_NAME --name $AKS_CLUSTER_NAME --node-count 3 --service-principal $APP_ID  --client-secret $APP_PW --generate-ssh-keys
+
+# Build docker image on acr
+az acr build --file Dockerfile --registry $ACR_NAME --image classroom_rubyrails .
 
 # Get client id
 CLIENT_ID=$(az aks show --resource-group $RESOURCE_GROUP_NAME --name $AKS_CLUSTER_NAME --query "servicePrincipalProfile.clientId" --output tsv)
