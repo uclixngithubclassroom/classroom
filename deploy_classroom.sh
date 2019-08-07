@@ -40,7 +40,7 @@ SERVICE_PRINCIPLE=$(az ad sp create-for-rbac --skip-assignment)
 echo "SERVICE_PRINCIPLE -> $SERVICE_PRINCIPLE"/
 
 # Parse JSON and get appId
-APP_ID=$(jq 'appId' $SERVICE_PRINCIPLE) 
+APP_ID=$(jq '.appId' $SERVICE_PRINCIPLE) 
 
 echo "App Id -> $APP_ID"
 
