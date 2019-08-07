@@ -46,11 +46,6 @@ echo "App password -> $APP_PW"
 # Build docker image on acr
 az acr build --file Dockerfile --registry $ACR_NAME --image classroom_rubyrails .
 
-# Get client id
-CLIENT_ID=$(az aks show --resource-group $RESOURCE_GROUP_NAME --name $AKS_CLUSTER_NAME --query "servicePrincipalProfile.clientId" --output tsv)
-
-echo "Client ID -> $CLIENT_ID"
-
 # Get the ACR registry resource id
 ACR_ID=$(az acr show --name $ACR_NAME --resource-group $RESOURCE_GROUP_NAME --query "id" --output tsv)
 
@@ -59,6 +54,10 @@ echo "ACR ID -> $ACR_ID"
 # Create an Azure Kubernetes Service inside the Resource Group
 echo "Creating AKS Cluster in the Resource Group -->"
 az aks create --resource-group $RESOURCE_GROUP_NAME --name $AKS_CLUSTER_NAME --node-count 3 --service-principal $APP_ID  --client-secret $APP_PW --generate-ssh-keys
+
+# Get client id
+CLIENT_ID=$(az aks show --resource-group $RESOURCE_GROUP_NAME --name $AKS_CLUSTER_NAME --query "servicePrincipalProfile.clientId" --output tsv)
+echo "Client ID -> $CLIENT_ID"
 
 # Create role assignment
 az role assignment create --assignee $CLIENT_ID --role acrpull --scope $ACR_ID -g
