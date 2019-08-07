@@ -63,7 +63,7 @@ echo "Client ID -> $CLIENT_ID"
 az role assignment create --assignee $CLIENT_ID --role acrpull --scope $ACR_ID -g
 
 # Connect to cluster
-az aks get-credentials --resource-group $RESOURCE_GROUP_NAME --name $AKS
+az aks get-credentials --resource-group $RESOURCE_GROUP_NAME --name $AKS_CLUSTER_NAME
 
 # Deploy it on AKS
 kubectl create -f classroom-classroom-data-elasticsearch-data-persistentvolumeclaim.yaml,classroom-classroom-data-elasticsearch-logs-persistentvolumeclaim.yaml,classroom-classroom-data-postgres-data-persistentvolumeclaim.yaml,classroom-classroom-data-postgres-logs-persistentvolumeclaim.yaml,classroom-classroom-data-redis-data-persistentvolumeclaim.yaml,classroom-classroom-data-redis-logs-persistentvolumeclaim.yaml,elasticsearch-deployment.yaml,elasticsearch-service.yaml,memcached-deployment.yaml,memcached-service.yaml,postgresql-deployment.yaml,postgresql-service.yaml,redis-deployment.yaml,redis-service.yaml,rubyrails-deployment.yaml,rubyrails-service.yaml
@@ -71,4 +71,3 @@ kubectl create -f classroom-classroom-data-elasticsearch-data-persistentvolumecl
 # Clean up the Azure Shell
 rm -rf classroom
 
-#
