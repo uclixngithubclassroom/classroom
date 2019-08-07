@@ -192,7 +192,7 @@ Once that's done the script will kindly remind you to fill out you `.env` file i
 - Tag the classroom-rubyrails image, and we only need to push this image to ACR. ```docker tag classroom-rubyrails <acrLoginServer>/classroom-rubyrails:v1```
 - Push images to registry. ```docker push <acrLoginServer>/classroom-rubyrails:v1```
 - Create a service principle ```az ad sp create-for-rbac --skip-assignment```, remember the appId and password.
-- Configure ACR authentication: ```az acr show --resource-group myResourceGroup --name <acrName> --query "id" --output tsv```, ```az role assignment create --assignee <appId> --scope <acrId> --role acrpull```
+- Configure ACR authentication (To pull images from ACR): ```az acr show --resource-group myResourceGroup --name <acrName> --query "id" --output tsv```, ```az role assignment create --assignee <appId> --scope <acrId> --role acrpull```
 - Create a Kubenetes cluster. ```az aks create \
     --resource-group myResourceGroup \
     --name myAKSCluster \
@@ -201,74 +201,9 @@ Once that's done the script will kindly remind you to fill out you `.env` file i
     --client-secret <password> \
     --generate-ssh-keys```
 - Coneect to the cluster ```az aks get-credentials --resource-group myResourceGroup --name myAKSCluster```
-- Verify the connection ```kubectl get nodes```
-- Then we will need Kompose to translate the docker-compose file into Kubernetes resources. The main process follows this link [https://www.digitalocean.com/community/tutorials/how-to-migrate-a-docker-compose-workflow-to-kubernetes]. There are several ways to install Kompose: [https://github.com/kubernetes/kompose/blob/master/docs/installation.md#macos].
-- Step 1: Traslate docker-compose file into aks configuration file. ```kompose -f docker-compose-aks.yml convert```(We have created a new docker-compose-aks.yml file to implement the AKS deployment. You can find it in the root path of Github Classroom repo).
-- Step 2: Add the code below the ports and resources fields and above the restartPolicy to the rubyrails-deployment.yaml file that just created:
-```
-apiVersion: extensions/v1beta1
-kind: Deployment
-...
-    spec:
-      containers:
-      ...
-        name: nodejs
-        ports:
-        - containerPort: 8080
-        resources: {}
-      # below
-      initContainers:
-      - name: init-postgres
-        image: busybox
-        command: ['sh', '-c', 'until nc -z db:2345; do echo waiting for postgres; sleep 2; done;']
-      # above
-      restartPolicy: Always
-```
-This code is used for the main application to wait for the postgresql database to complete the initialization process.
-
-Then add the initContainers part in the followinng code to the elasticsearch-deployment.yaml file:
-```
-...
-spec:
-  containers:
-  - image: docker.elastic.co/elasticsearch/elasticsearch:6.3.2
-    name: classroom-elasticsearch
-    ports:
-    - containerPort: 9300
-    - containerPort: 9200
-    resources: {}
-    volumeMounts:
-    - mountPath: /usr/share/elasticsearch/data
-      name: classroommaster-classroom-data-elasticsearch-data
-    - mountPath: /user/share/elasticsearch/logs
-      name: classroommaster-classroom-data-elasticsearch-logs
-  # below
-  initContainers:
-  - name: init-postgresql
-    image: busybox
-    command: ['sysctl', '-w', 'vm.max_map_count=262144']
-  # above
-  restartPolicy: Always
-  volumes:
-...
-```
-This code is used to increase the virtual memory size to fit the elasticsearch requirement.
-
-- Step 3: Modify the rubyrails-service.yaml file, specify LoadBalancer as the Service type:
-```
-apiVersion: v1
-kind: Service
-...
-spec:
-  type: LoadBalancer
-  ports:
-...
-```
-- Step 4: Run the following command to create the objects we've defined in the cluster.
-```kubectl create -f classroommaster-classroom-data-elasticsearch-data-persistentvolumeclaim.yaml,classroommaster-classroom-data-elasticsearch-logs-persistentvolumeclaim.yaml,classroommaster-classroom-data-postgres-data-persistentvolumeclaim.yaml,classroommaster-classroom-data-postgres-logs-persistentvolumeclaim.yaml,classroommaster-classroom-data-redis-data-persistentvolumeclaim.yaml,classroommaster-classroom-data-redis-logs-persistentvolumeclaim.yaml,elasticsearch-deployment.yaml,elasticsearch-service.yaml,memcached-deployment.yaml,memcached-service.yaml,postgresql-deployment.yaml,postgresql-service.yaml,redis-deployment.yaml,redis-service.yaml,rubyrails-deployment.yaml,rubyrails-service.yaml```
-- Step 5: Then you can use ```kubectl get deployment,svc,pods,pvc``` to check the deployment status. (We still stuck on this step)
-
-
+- cd to the azure deployment folder inside the classroom repo.
+- deploy the application by using the pre-defined yaml file: ```kubectl create -f classroom-classroom-data-elasticsearch-data-persistentvolumeclaim.yaml,classroom-classroom-data-elasticsearch-logs-persistentvolumeclaim.yaml,classroom-classroom-data-postgres-data-persistentvolumeclaim.yaml,classroom-classroom-data-postgres-logs-persistentvolumeclaim.yaml,classroom-classroom-data-redis-data-persistentvolumeclaim.yaml,classroom-classroom-data-redis-logs-persistentvolumeclaim.yaml,elasticsearch-deployment.yaml,elasticsearch-service.yaml,memcached-deployment.yaml,memcached-service.yaml,postgresql-deployment.yaml,postgresql-service.yaml,redis-deployment.yaml,redis-service.yaml,rubyrails-deployment.yaml,rubyrails-service.yaml```
+- use ```kubectl get pod -w``` to get the running status of each pod.
 
 ### Development environment variables
 
