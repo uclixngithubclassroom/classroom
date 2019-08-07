@@ -17,7 +17,8 @@
 read -p 'Enter the Resource Group Name that Classroom will be deployed (Case sensitive): ' RESOURCE_GROUP_NAME
 read -p 'Enter the resource location for the deployment [ukwest, uksouth]:' RESOURCE_GROUP_LOCATION
 read -p 'Enter the AKS Cluster Name that Classroom will be deployed (Case sensitive): ' AKS_CLUSTER_NAME
-read -p 'Enter the ACR Name that Classroom will be deployed (Case sensitive): ' ACR_NAME
+#read -p 'Enter the ACR Name that Classroom will be deployed (Case sensitive): ' ACR_NAME
+ACR_NAME="classroomacr"
 
 #create resource-group
 echo "Creating Resource Group -->"
@@ -60,14 +61,20 @@ CLIENT_ID=$(az aks show --resource-group $RESOURCE_GROUP_NAME --name $AKS_CLUSTE
 echo "Client ID -> $CLIENT_ID"
 
 # Create role assignment
-az role assignment create --assignee $CLIENT_ID --role acrpull --scope $ACR_ID -g
+az role assignment create --assignee $APP_ID --role acrpull --scope $ACR_ID -g
 
 # Connect to cluster
+echo "Connecting to AKS Cluster -->"
 az aks get-credentials --resource-group $RESOURCE_GROUP_NAME --name $AKS_CLUSTER_NAME
+
+# Navigate to configuration folder
+cd azure_deployment
 
 # Deploy it on AKS
 kubectl create -f classroom-classroom-data-elasticsearch-data-persistentvolumeclaim.yaml,classroom-classroom-data-elasticsearch-logs-persistentvolumeclaim.yaml,classroom-classroom-data-postgres-data-persistentvolumeclaim.yaml,classroom-classroom-data-postgres-logs-persistentvolumeclaim.yaml,classroom-classroom-data-redis-data-persistentvolumeclaim.yaml,classroom-classroom-data-redis-logs-persistentvolumeclaim.yaml,elasticsearch-deployment.yaml,elasticsearch-service.yaml,memcached-deployment.yaml,memcached-service.yaml,postgresql-deployment.yaml,postgresql-service.yaml,redis-deployment.yaml,redis-service.yaml,rubyrails-deployment.yaml,rubyrails-service.yaml
 
 # Clean up the Azure Shell
-rm -rf classroom
+#rm -rf classroom
 
+# Show pod status
+kubectl get pod -w
