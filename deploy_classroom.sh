@@ -17,6 +17,9 @@ read -p 'Enter the AKS Cluster Name that Classroom will be deployed (Case sensit
 read -p 'Enter the Airbrake Project ID  (Case sensitive): ' AIRBRAKE_PROJECT_ID
 read -p 'Enter the Airbrake Project Key  (Case sensitive): ' AIRBRAKE_PROJECT_KEY
 
+echo "Project id -> $AIRBRAKE_PROJECT_ID"
+echo "Project id -> $AIRBRAKE_PROJECT_KEY"
+
 # Get secret key from the user using the Azure Shell command
 #SECRET_KEY_BASE=$()
 
