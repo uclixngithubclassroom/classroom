@@ -297,7 +297,9 @@ We strongly encourage you to use [https://classroom.github.com](https://classroo
 
 Test Azure deployment.
 
-[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://azuredeploy.net/)
+<a href="https://shell.azure.com/" target="_blank">
+    <img src="https://azuredeploy.net/deploybutton.png"/>
+</a>
 
 
 There are a few environment variables you will need to know in order to get Classroom working on production.
