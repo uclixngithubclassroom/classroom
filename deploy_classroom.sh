@@ -61,7 +61,7 @@ CLIENT_ID=$(az aks show --resource-group $RESOURCE_GROUP_NAME --name $AKS_CLUSTE
 echo "Client ID -> $CLIENT_ID"
 
 # Create role assignment
-az role assignment create --assignee $APP_ID --role acrpull --scope $ACR_ID -g
+az role assignment create --assignee $APP_ID --role acrpull --scope $ACR_ID
 
 # Connect to cluster
 echo "Connecting to AKS Cluster -->"
