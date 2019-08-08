@@ -7,18 +7,19 @@
 #git checkout UCLAzureDeploy
 #bash deploy_classroom.sh
 
-#AKS_RESOURCE_GROUP=myAKSResourceGroup
-#AKS_CLUSTER_NAME=myAKSCluster
-#ACR_NAME=myACRRegistry
+# Automatically set-up the ACR name
+ACR_NAME="classroomacr"
 
-#echo "Enter the resource group name that Classroom will be deployed (Case sensitive): "
-#read -p 'Enter the resource group name that Classroom will be deployed (Case sensitive): ' ACR_RESOURCE_GROUP
-
+# Read details for the resource group and its elements from the user
 read -p 'Enter the Resource Group Name that Classroom will be deployed (Case sensitive): ' RESOURCE_GROUP_NAME
 read -p 'Enter the resource location for the deployment [ukwest, uksouth]:' RESOURCE_GROUP_LOCATION
 read -p 'Enter the AKS Cluster Name that Classroom will be deployed (Case sensitive): ' AKS_CLUSTER_NAME
-#read -p 'Enter the ACR Name that Classroom will be deployed (Case sensitive): ' ACR_NAME
-ACR_NAME="classroomacr"
+read -p 'Enter the Airbrake Project ID  (Case sensitive): ' AIRBRAKE_PROJECT_ID
+read -p 'Enter the Airbrake Project Key  (Case sensitive): ' AIRBRAKE_PROJECT_KEY
+
+# Get secret key from the user using the Azure Shell command
+#SECRET_KEY_BASE=$()
+
 
 #create resource-group
 echo "Creating Resource Group -->"
