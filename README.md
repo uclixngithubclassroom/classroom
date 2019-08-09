@@ -305,7 +305,13 @@ Click to the button below for Azure deployment and follow the instructions
 
 When clicked, button will take you to the Azure CLI. Make sure you CLI is configured to be a Bash. 
 
-When CLI is ready you need to execute the command ```bash <(curl -s https://raw.githubusercontent.com/uclixngithubclassroom/classroom/UCLAzureDeploy/deploy_classroom.sh)``` , This will download the script form this repository and start the deployment.
+When CLI is ready you need to execute the command 
+
+  ```bash
+  bash <(curl -s https://raw.githubusercontent.com/uclixngithubclassroom/classroom/UCLAzureDeploy/deploy_classroom.sh)
+  ```
+
+ This will download the script form this repository and start the deployment.
 
 Make sure you check the Production environment variables described below since you will be needing some of those.
 
