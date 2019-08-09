@@ -297,7 +297,7 @@ We strongly encourage you to use [https://classroom.github.com](https://classroo
 
 ### Azure deployment
 
-[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://azuredeploy.net/)
+[![Deploy to Azure](http://azuredeploy.net/deploybutton.svg)](https://deploy.azure.com/?repository=https://github.com/uclixngithubclassroom/classroom/tree/UCLAzureDeploy?ptmpl=parameters.azuredeploy.json)
 
 There are a few environment variables you will need to know in order to get Classroom working on production.
 

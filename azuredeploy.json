@@ -2,7 +2,7 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "AksClusterName": {
+    "clusterName": {
       "defaultValue": "myAKSCluster",
       "minLength": 4,
       "type": "string",
@@ -92,11 +92,11 @@
     {
       "type": "Microsoft.ContainerService/managedClusters",
       "apiVersion": "2019-06-01",
-      "name": "[parameters('AksClusterName')]",
+      "name": "[parameters('clusterName')]",
       "location": "[parameters('location')]",
       "properties": {
         "kubernetesVersion": "1.12.8",
-        "dnsPrefix": "[concat(parameters('AksClusterName'))]",
+        "dnsPrefix": "[concat(parameters('clusterName'))]",
         "agentPoolProfiles": [
           {
             "name": "nodepool1",
@@ -124,7 +124,7 @@
           "clientId": "[parameters('servicePrincipalClientId')]",
           "Secret": "[parameters('servicePrincipalClientSecret')]"
         },
-        "nodeResourceGroup": "[concat(parameters('AksClusterName'), '-', parameters('location'))]",
+        "nodeResourceGroup": "[concat(parameters('clusterName'), '-', parameters('location'))]",
         "enableRBAC": true,
         "networkProfile": {
           "networkPlugin": "kubenet",
