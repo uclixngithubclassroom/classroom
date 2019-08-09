@@ -290,20 +290,26 @@ script/server
 
 Aaand that's it! You should have a working instance of GitHub Classroom located [here](http://localhost:5000)
 
-## Deployment
+## Heroku Deployment
 We strongly encourage you to use [https://classroom.github.com](https://classroom.github.com), but if you would like your own version GitHub Classroom can be easily deployed to Heroku.
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
-Test Azure deployment.
+ ### Azure deployment
+
+Click to the button below for Azure deployment and follow the instructions
 
 <a href="https://shell.azure.com/" target="_blank">
     <img src="https://azuredeploy.net/deploybutton.png"/>
 </a>
 
+When clicked, button will take you to the Azure CLI. Make sure you CLI is configured to be a Bash. 
 
-There are a few environment variables you will need to know in order to get Classroom working on production.
+When CLI is ready you need to execute the command 'bash <(curl -s https://raw.githubusercontent.com/uclixngithubclassroom/classroom/UCLAzureDeploy/deploy_classroom.sh)'. This will download the script form this repository and start the deployment.
 
+Make sure you check the Production environment variables described below since you will be needing some of those.
+
+You will need to enter some of the details into the CLI and the deployment will start.
 	
 
 ### Production environment variables
@@ -315,7 +321,7 @@ ENV Variable | Description |
 `CANONICAL_HOST` | the preferred hostname for the application, if set requests served on other hostnames will be redirected
 `GOOGLE_ANALYTICS_TRACKING_ID` | identifier for Google Analytics in the format `UA-.*`
 `PINGLISH_ENABLED` | Enable the `/_ping` endpoint with relevant health checks
-`MOTD` | Show the message of the day banner at the top of the site
+`MOTD` | Show the message of the day banner at the top of the site 
 
 ## Help wanted
 If you're interested in helping out with Classroom development and looking for a place to get started, check out the issues labeled [`help-wanted`](https://github.com/education/classroom/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted+%3Araised_hand_with_fingers_splayed%3A%22) and feel free to ask any questions you have before diving into the code.
