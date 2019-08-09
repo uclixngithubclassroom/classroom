@@ -93,7 +93,7 @@
         "servicePrincipalProfile": {
           "clientId": "6c5fbb09-2b14-41a9-94b2-8fb3d811e1e3"
         },
-        "nodeResourceGroup": "[concat(parameters('AksClusterName'), parameters('location')]",
+        "nodeResourceGroup": "[concat(parameters('AksClusterName'), '-', parameters('location'))]",
         "enableRBAC": true,
         "networkProfile": {
           "networkPlugin": "kubenet",
