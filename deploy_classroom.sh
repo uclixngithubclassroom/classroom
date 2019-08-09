@@ -7,21 +7,14 @@
 #git checkout UCLAzureDeploy
 #bash deploy_classroom.sh
 
-# Automatically set-up the ACR name
-ACR_NAME="classroomacr"
-
 #LOCATIONS = centralus,eastasia,southeastasia,eastus,eastus2,westus,westus2,northcentralus,southcentralus,westcentralus,northeurope,westeurope,japaneast,japanwest,brazilsouth,australiasoutheast,australiaeast,westindia,southindia,centralindia,canadacentral,canadaeast,uksouth,ukwest,koreacentral,koreasouth,francecentral,southafricanorth,uaenorth,australiacentral
 # Read details for the resource group and its elements from the user
 read -p 'Enter the Resource Group Name that Classroom will be deployed (Case sensitive): ' RESOURCE_GROUP_NAME
 read -p 'Enter the resource location for the deployment [ukwest, uksouth]:' RESOURCE_GROUP_LOCATION
 read -p 'Enter the AKS Cluster Name that Classroom will be deployed (Case sensitive): ' AKS_CLUSTER_NAME
-#read -p 'Enter the Airbrake Project ID  (Case sensitive): ' AIRBRAKE_PROJECT_ID
-#read -p 'Enter the Airbrake Project Key  (Case sensitive): ' AIRBRAKE_PROJECT_KEY
-
-#export AIRBRAKE_PROJECT_ID='238971'
-#export AIRBRAKE_PROJECT_KEY='a3028a6657c6305de9b61e8be96ed59f'
-
-cat deployment.yaml.tmpl | sed 's/\$AIRBRAKE_PROJECT_KEY'"/$BRANCH_NAME/g" | sed 's/\$GAZI'"/$RESOURCE_GROUP_NAME/g" |
+read -p 'Enter the Airbrake Project ID  (Case sensitive): ' AIRBRAKE_PROJECT_ID
+read -p 'Enter the Airbrake Project Key  (Case sensitive): ' AIRBRAKE_PROJECT_KEY
+read -p 'Enter the Azure Container Registery name: ' ACR_NAME
 
 # Get secret key from the user using the Azure Shell command
 #SECRET_KEY_BASE=$()
@@ -76,11 +69,13 @@ az aks get-credentials --resource-group $RESOURCE_GROUP_NAME --name $AKS_CLUSTER
 # Navigate to configuration folder
 cd azure_deployment
 
+#Configure variables
+sed -i "s|\$AIRBRAKE_PROJECT_ID|${AIRBRAKE_PROJECT_ID}|" rubyrails-deployment.yaml
+sed -i "s|\$AIRBRAKE_PROJECT_KEY|${AIRBRAKE_PROJECT_KEY}|" rubyrails-deployment.yaml
+sed -i "s|\$CLASSROOMACR|${ACR_NAME}|" rubyrails-deployment.yaml
+
 # Deploy it on AKS
 kubectl create -f classroom-classroom-data-elasticsearch-data-persistentvolumeclaim.yaml,classroom-classroom-data-elasticsearch-logs-persistentvolumeclaim.yaml,classroom-classroom-data-postgres-data-persistentvolumeclaim.yaml,classroom-classroom-data-postgres-logs-persistentvolumeclaim.yaml,classroom-classroom-data-redis-data-persistentvolumeclaim.yaml,classroom-classroom-data-redis-logs-persistentvolumeclaim.yaml,elasticsearch-deployment.yaml,elasticsearch-service.yaml,memcached-deployment.yaml,memcached-service.yaml,postgresql-deployment.yaml,postgresql-service.yaml,redis-deployment.yaml,redis-service.yaml,rubyrails-deployment.yaml,rubyrails-service.yaml
-
-# Clean up the Azure Shell
-#rm -rf classroom
 
 # Show pod status
 kubectl get pod -w
