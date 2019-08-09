@@ -3,12 +3,11 @@
 # MANUAL STEPS
 #wget -O - https://raw.githubusercontent.com/uclixngithubclassroom/classroom/UCLAzureDeploy/deploy_classroom.sh | bash
 
+#Navigate to the repo automatically
 echo "Cloning the repo --->"
 git clone https://github.com/uclixngithubclassroom/classroom.git
 cd classroom
 git checkout UCLAzureDeploy
-dos2unix deploy_classroom.sh
-bash deploy_classroom.sh
 
 
 #LOCATIONS = centralus,eastasia,southeastasia,eastus,eastus2,westus,westus2,northcentralus,southcentralus,westcentralus,northeurope,westeurope,japaneast,japanwest,brazilsouth,australiasoutheast,australiaeast,westindia,southindia,centralindia,canadacentral,canadaeast,uksouth,ukwest,koreacentral,koreasouth,francecentral,southafricanorth,uaenorth,australiacentral
