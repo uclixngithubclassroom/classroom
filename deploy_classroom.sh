@@ -3,6 +3,7 @@
 # MANUAL STEPS
 #wget -O - https://raw.githubusercontent.com/uclixngithubclassroom/classroom/UCLAzureDeploy/deploy_classroom.sh | bash
 #bash <(curl -s https://raw.githubusercontent.com/uclixngithubclassroom/classroom/UCLAzureDeploy/deploy_classroom.sh)
+#wget https://raw.githubusercontent.com/uclixngithubclassroom/classroom/UCLAzureDeploy/deploy_classroom.sh | bash deploy_classroom.sh
 
 
 #Navigate to the repo automatically
