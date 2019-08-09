@@ -1,0 +1,108 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "managedClusters_name": {
+      "defaultValue": "myAKSCluster",
+      "minLength": 4,
+      "type": "string",
+      "metadata": {
+        "description": "AKS Cluster name"
+      }
+    },
+    "registries_classroomacr_name": {
+      "defaultValue": "github_classroom",
+      "minLength": 4,
+      "type": "string",
+      "metadata": {
+        "description": "AKS Cluster name"
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "ukwest",
+      "allowedValues": [
+        "centralus",
+        "eastasia",
+        "southeastasia",
+        "eastus",
+        "westus",
+        "northcentralus",
+        "northeurope",
+        "westeurope",
+        "japaneast",
+        "japanwest",
+        "australiasoutheast",
+        "australiaeast",
+        "westindia",
+        "uksouth",
+        "ukwest",
+        "australiacentral"
+      ],
+      "metadata": {
+          "description": "Location of the resource group"
+      }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "type": "Microsoft.ContainerRegistry/registries",
+      "apiVersion": "2017-10-01",
+      "name": "[parameters('registries_classroomacr_name')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Basic",
+        "tier": "Basic"
+      },
+      "properties": {
+        "adminUserEnabled": false
+      }
+    },
+    {
+      "type": "Microsoft.ContainerService/managedClusters",
+      "apiVersion": "2019-06-01",
+      "name": "[parameters('managedClusters_name')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "kubernetesVersion": "1.12.8",
+        "dnsPrefix": "[concat(parameters('managedClusters_aksGazi_name'))]",
+        "agentPoolProfiles": [
+          {
+            "name": "nodepool1",
+            "count": 3,
+            "vmSize": "Standard_DS2_v2",
+            "osDiskSizeGB": 100,
+            "maxPods": 110,
+            "type": "AvailabilitySet",
+            "orchestratorVersion": "1.12.8",
+            "enableNodePublicIP": false,
+            "osType": "Linux"
+          }
+        ],
+        "linuxProfile": {
+          "adminUsername": "azureuser",
+          "ssh": {
+            "publicKeys": [
+              {
+                "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDh1UNpg9f1ANMHOPppekYLWiw+IEexbTQhlKHr5lV5mH2+vchY1vCOWTUeFwlL5xs8H+s4sZ9AP1++JlJMa2VReCxg1L3gaG0O/k17pqfKKps54EHKao+YoJHUsblMN94n5M7RfVA6R/BUfa/eGuDPugQLT3D7R7v1Y3RH5QlG+CwqF6hD8kYrwItE0rQD2aGv22R1oW+Hsz7KV/Z17ZBWsTSSRl22e8dPU+E1SFxFmZWn559Yf9dlv4AdqG6MpZVh+1HJHkOepfa6EHT/LDfUZYa7F05WXaW9dECV9jOqxYntCXG9C8S/RaWcgGI/t72oMGaTYoskeJEOBuOAKBpP"
+              }
+            ]
+          }
+        },
+        "servicePrincipalProfile": {
+          "clientId": "6c5fbb09-2b14-41a9-94b2-8fb3d811e1e3"
+        },
+        "nodeResourceGroup": "[concat(parameters('managedClusters_name'), parameters('location')]",
+        "enableRBAC": true,
+        "networkProfile": {
+          "networkPlugin": "kubenet",
+          "loadBalancerSku": "basic",
+          "podCidr": "10.244.0.0/16",
+          "serviceCidr": "10.0.0.0/16",
+          "dnsServiceIP": "10.0.0.10",
+          "dockerBridgeCidr": "172.17.0.1/16"
+        }
+      }
+    }
+  ]
+}
