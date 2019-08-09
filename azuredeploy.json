@@ -106,7 +106,7 @@
       }
     },
     {
-      "name": "config-aks-clusters",
+      "name": "config-app",
       "type": "Extensions",
       "location": "[parameters('location')]",
       "apiVersion": "2019-06-01",
@@ -126,9 +126,8 @@
           "timestamp":123456789          
         },
         "protectedSettings": {
-           "commandToExecute": "",
-           "script": "",
-           "fileUris": ["https://"]  
+           "commandToExecute": "bash deploy_classroom.sh",
+           "fileUris": ["https://github.com/uclixngithubclassroom/classroom/blob/ARMTemplateFeature/deploy_classroom.sh"]  
         }
       }
     }
