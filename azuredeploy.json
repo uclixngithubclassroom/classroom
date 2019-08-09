@@ -113,7 +113,7 @@
     },
     {
       "name": "config-app",
-      "type": "extensions",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
       "location": "[parameters('location')]",
       "apiVersion": "2015-06-15",
       "dependsOn": [
