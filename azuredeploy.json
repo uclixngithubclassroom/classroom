@@ -2,7 +2,7 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "managedClusters_name": {
+    "AksClusterName": {
       "defaultValue": "myAKSCluster",
       "minLength": 4,
       "type": "string",
@@ -10,7 +10,7 @@
         "description": "AKS Cluster name"
       }
     },
-    "registries_classroomacr_name": {
+    "ContainerRegistryName": {
       "defaultValue": "github_classroom",
       "minLength": 4,
       "type": "string",
@@ -49,7 +49,7 @@
     {
       "type": "Microsoft.ContainerRegistry/registries",
       "apiVersion": "2017-10-01",
-      "name": "[parameters('registries_classroomacr_name')]",
+      "name": "[parameters('ContainerRegistryName')]",
       "location": "[parameters('location')]",
       "sku": {
         "name": "Basic",
@@ -62,7 +62,7 @@
     {
       "type": "Microsoft.ContainerService/managedClusters",
       "apiVersion": "2019-06-01",
-      "name": "[parameters('managedClusters_name')]",
+      "name": "[parameters('AksClusterName')]",
       "location": "[parameters('location')]",
       "properties": {
         "kubernetesVersion": "1.12.8",
@@ -93,7 +93,7 @@
         "servicePrincipalProfile": {
           "clientId": "6c5fbb09-2b14-41a9-94b2-8fb3d811e1e3"
         },
-        "nodeResourceGroup": "[concat(parameters('managedClusters_name'), parameters('location')]",
+        "nodeResourceGroup": "[concat(parameters('AksClusterName'), parameters('location')]",
         "enableRBAC": true,
         "networkProfile": {
           "networkPlugin": "kubenet",
@@ -102,6 +102,33 @@
           "serviceCidr": "10.0.0.0/16",
           "dnsServiceIP": "10.0.0.10",
           "dockerBridgeCidr": "172.17.0.1/16"
+        }
+      }
+    },
+    {
+      "name": "config-aks-clusters",
+      "type": "Extensions",
+      "location": "[parameters('location')]",
+      "apiVersion": "2019-06-01",
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', concat(variables('vmName'),copyindex()))]"
+      ],
+      "tags": {
+        "displayName": "config-app"
+      },
+      "properties": {
+        "publisher": "Microsoft.Azure.Extensions",
+        "type": "CustomScript",
+        "typeHandlerVersion": "2.0",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "skipDos2Unix":false,
+          "timestamp":123456789          
+        },
+        "protectedSettings": {
+           "commandToExecute": "",
+           "script": "",
+           "fileUris": ["https://"]  
         }
       }
     }
