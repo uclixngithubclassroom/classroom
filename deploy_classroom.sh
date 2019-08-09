@@ -94,3 +94,6 @@ kubectl create -f classroom-classroom-data-elasticsearch-data-persistentvolumecl
 
 # Show pod status
 kubectl get pod -w
+
+# Clear the Azure CLI
+rm -rf classroom
