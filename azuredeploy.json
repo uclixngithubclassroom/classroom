@@ -48,6 +48,30 @@
       "metadata": {
           "description": "Location of the resource group"
       }
+    },
+    "linuxAdminUsername": {
+      "type": "string",
+      "metadata": {
+          "description": "User name for the Linux Virtual Machines."
+      }
+    },
+    "sshRSAPublicKey": {
+      "type": "string",
+      "metadata": {
+          "description": "Configure all linux machines with the SSH RSA public key string. Your key should include three parts, for example 'ssh-rsa AAAAB...snip...UcyupgH azureuser@linuxvm'"
+      }
+    },
+    "servicePrincipalClientId": {
+      "metadata": {
+          "description": "Client ID (used by cloudprovider)"
+      },
+      "type": "securestring"
+    },
+    "servicePrincipalClientSecret": {
+      "metadata": {
+          "description": "The Service Principal Client Secret."
+      },
+      "type": "securestring"
     }
   },
   "variables": {},
@@ -87,17 +111,18 @@
           }
         ],
         "linuxProfile": {
-          "adminUsername": "azureuser",
+          "adminUsername": "[parameters('linuxAdminUsername')]",
           "ssh": {
             "publicKeys": [
               {
-                "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDh1UNpg9f1ANMHOPppekYLWiw+IEexbTQhlKHr5lV5mH2+vchY1vCOWTUeFwlL5xs8H+s4sZ9AP1++JlJMa2VReCxg1L3gaG0O/k17pqfKKps54EHKao+YoJHUsblMN94n5M7RfVA6R/BUfa/eGuDPugQLT3D7R7v1Y3RH5QlG+CwqF6hD8kYrwItE0rQD2aGv22R1oW+Hsz7KV/Z17ZBWsTSSRl22e8dPU+E1SFxFmZWn559Yf9dlv4AdqG6MpZVh+1HJHkOepfa6EHT/LDfUZYa7F05WXaW9dECV9jOqxYntCXG9C8S/RaWcgGI/t72oMGaTYoskeJEOBuOAKBpP"
+                "keyData": "[parameters('sshRSAPublicKey')]"
               }
             ]
           }
         },
         "servicePrincipalProfile": {
-          "clientId": "6c5fbb09-2b14-41a9-94b2-8fb3d811e1e3"
+          "clientId": "[parameters('servicePrincipalClientId')]",
+          "Secret": "[parameters('servicePrincipalClientSecret')]"
         },
         "nodeResourceGroup": "[concat(parameters('AksClusterName'), '-', parameters('location'))]",
         "enableRBAC": true,
@@ -112,34 +137,24 @@
       }
     },
     {
-        "apiVersion": "2015-06-15",
-        "dependsOn": [],
-        "location": "[parameters('location')]",
-        "name": "config-storage",
-        "properties": {
-          "accountType": "Standard_LRS"
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "CustomExtension",
+      "apiVersion": "2015-06-15",
+      "dependsOn": [],
+      "location": "[parameters('location')]",
+      "properties": {
+        "publisher": "Microsoft.OSTCExtensions",
+        "type": "CustomScriptForLinux",
+        "typeHandlerVersion": "1.5",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+            "skipDos2Unix": false,
+            "fileUris": ["https://github.com/uclixngithubclassroom/classroom/blob/ARMTemplateFeature/deploy_classroom.sh"]
         },
-        "type": "Microsoft.Storage/storageAccounts"
-    }, 
-    {
-        "apiVersion": "2015-06-15",
-        "dependsOn": [],
-        "location": "[parameters('location')]",
-        "type": "Microsoft.Compute/virtualMachines/extensions",
-        "name": "CustomExtension",
-        "properties": {
-          "publisher": "Microsoft.OSTCExtensions",
-          "type": "CustomScriptForLinux",
-          "typeHandlerVersion": "1.5",
-          "autoUpgradeMinorVersion": true,
-          "settings": {
-              "skipDos2Unix": false,
-              "fileUris": ["https://github.com/uclixngithubclassroom/classroom/blob/ARMTemplateFeature/deploy_classroom.sh"]
-          },
-          "protectedSettings": {
-              "commandToExecute": "bash deploy_classroom.sh"
-          }
+        "protectedSettings": {
+            "commandToExecute": "bash deploy_classroom.sh"
         }
+      }
     }
   ]
 }
