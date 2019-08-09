@@ -21,6 +21,8 @@ read -p 'Enter the AKS Cluster Name that Classroom will be deployed (Case sensit
 #export AIRBRAKE_PROJECT_ID='238971'
 #export AIRBRAKE_PROJECT_KEY='a3028a6657c6305de9b61e8be96ed59f'
 
+cat deployment.yaml.tmpl | sed 's/\$AIRBRAKE_PROJECT_KEY'"/$BRANCH_NAME/g" | sed 's/\$GAZI'"/$RESOURCE_GROUP_NAME/g" |
+
 # Get secret key from the user using the Azure Shell command
 #SECRET_KEY_BASE=$()
 

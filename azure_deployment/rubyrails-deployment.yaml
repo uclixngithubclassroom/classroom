@@ -38,9 +38,10 @@ spec:
         - name: 'AIRBRAKE_PROJECT_ID' 
           value: '238971' #${AIRBRAKE_PROJECT_ID} # 
         - name: 'AIRBRAKE_PROJECT_KEY'
-          value: 'a3028a6657c6305de9b61e8be96ed59f' #${AIRBRAKE_PROJECT_KEY} # 
+          value: 'a3028a6657c6305de9b61e8be96ed59f' #$AIRBRAKE_PROJECT_KEY# 
         - name: 'SECRET_KEY_BASE'
           value: '610823461484812c67d7e732168014abd344a91b0e2b658d5f64f2f29372abafc999184fc362eb5a6e21f274200f801cd0fe7ea3cce24def5b21b617ff304ddd' #${SECRET_KEY_BASE}
+        #$GAZI
         ports:
         - containerPort: 5000
         resources: {}
