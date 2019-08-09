@@ -42,6 +42,7 @@
       "metadata": {
           "description": "Location of the resource group"
       }
+    }
   },
   "variables": {},
   "resources": [
