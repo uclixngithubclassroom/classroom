@@ -42,6 +42,12 @@ spec:
         - name: 'SECRET_KEY_BASE'
           value: '610823461484812c67d7e732168014abd344a91b0e2b658d5f64f2f29372abafc999184fc362eb5a6e21f274200f801cd0fe7ea3cce24def5b21b617ff304ddd' 
           #$SECRET_KEY_BASE
+        - name: 'GITHUB_CLIENT_ID' # fd13f782958301868854
+          value: $GITHUB_CLIENT_ID 
+        - name: 'GITHUB_CLIENT_SECRET' # d4cba88dfa166c1411c0b46c7b5974d64a172820
+          value: $GITHUB_CLIENT_SECRET
+        - name: 'NON_STAFF_GITHUB_ADMIN_IDS' # 17485530
+          value: $NON_STAFF_GITHUB_ADMIN_IDS
         ports:
         - containerPort: 5000
         resources: {}

@@ -21,6 +21,9 @@ read -p 'Enter the AKS Cluster Name that Classroom will be deployed (Case sensit
 read -p 'Enter the Airbrake Project ID  (Case sensitive): ' AIRBRAKE_PROJECT_ID
 read -p 'Enter the Airbrake Project Key  (Case sensitive): ' AIRBRAKE_PROJECT_KEY
 read -p 'Enter the Azure Container Registery name: ' ACR_NAME
+read -p 'Enter the Github Client ID: ' GITHUB_CLIENT_ID
+read -p 'Enter the Github Client Secret: ' GITHUB_CLIENT_SECRET
+read -p 'Enter the non-staff Github Admin IDs: ' NON_STAFF_GITHUB_ADMIN_IDS
 
 # Get secret key from the user using the Azure Shell command
 #SECRET_KEY_BASE=$()
@@ -79,6 +82,9 @@ cd azure_deployment
 sed -i "s|\$AIRBRAKE_PROJECT_ID|${AIRBRAKE_PROJECT_ID}|" rubyrails-deployment.yaml
 sed -i "s|\$AIRBRAKE_PROJECT_KEY|${AIRBRAKE_PROJECT_KEY}|" rubyrails-deployment.yaml
 sed -i "s|\$CLASSROOMACR|${ACR_NAME}|" rubyrails-deployment.yaml
+sed -i "s|\$GITHUB_CLIENT_ID|${GITHUB_CLIENT_ID}|" rubyrails-deployment.yaml
+sed -i "s|\$GITHUB_CLIENT_SECRET|${GITHUB_CLIENT_SECRET}|" rubyrails-deployment.yaml
+sed -i "s|\$NON_STAFF_GITHUB_ADMIN_IDS|${NON_STAFF_GITHUB_ADMIN_IDS}|" rubyrails-deployment.yaml
 
 # Deploy it on AKS
 kubectl create -f classroom-classroom-data-elasticsearch-data-persistentvolumeclaim.yaml,classroom-classroom-data-elasticsearch-logs-persistentvolumeclaim.yaml,classroom-classroom-data-postgres-data-persistentvolumeclaim.yaml,classroom-classroom-data-postgres-logs-persistentvolumeclaim.yaml,classroom-classroom-data-redis-data-persistentvolumeclaim.yaml,classroom-classroom-data-redis-logs-persistentvolumeclaim.yaml,elasticsearch-deployment.yaml,elasticsearch-service.yaml,memcached-deployment.yaml,memcached-service.yaml,postgresql-deployment.yaml,postgresql-service.yaml,redis-deployment.yaml,redis-service.yaml,rubyrails-deployment.yaml,rubyrails-service.yaml
