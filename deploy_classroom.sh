@@ -1,11 +1,15 @@
 #!/bin/sh
 
 # MANUAL STEPS
-#echo "Cloning the repo --->"
-#git clone https://github.com/uclixngithubclassroom/classroom.git
-#cd classroom
-#git checkout UCLAzureDeploy
-#bash deploy_classroom.sh
+#wget -O - https://raw.githubusercontent.com/uclixngithubclassroom/classroom/UCLAzureDeploy/deploy_classroom.sh | bash
+
+echo "Cloning the repo --->"
+git clone https://github.com/uclixngithubclassroom/classroom.git
+cd classroom
+git checkout UCLAzureDeploy
+dos2unix deploy_classroom.sh
+bash deploy_classroom.sh
+
 
 #LOCATIONS = centralus,eastasia,southeastasia,eastus,eastus2,westus,westus2,northcentralus,southcentralus,westcentralus,northeurope,westeurope,japaneast,japanwest,brazilsouth,australiasoutheast,australiaeast,westindia,southindia,centralindia,canadacentral,canadaeast,uksouth,ukwest,koreacentral,koreasouth,francecentral,southafricanorth,uaenorth,australiacentral
 # Read details for the resource group and its elements from the user
