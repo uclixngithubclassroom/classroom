@@ -72,7 +72,7 @@
       "location": "[parameters('location')]",
       "properties": {
         "kubernetesVersion": "1.12.8",
-        "dnsPrefix": "[concat(parameters('managedClusters_aksGazi_name'))]",
+        "dnsPrefix": "[concat(parameters('AksClusterName'))]",
         "agentPoolProfiles": [
           {
             "name": "nodepool1",
@@ -112,30 +112,34 @@
       }
     },
     {
-      "name": "config-app",
-      "type": "Microsoft.Compute/virtualMachines/extensions",
-      "location": "[parameters('location')]",
-      "apiVersion": "2015-06-15",
-      "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', concat(variables('vmName'),copyindex()))]"
-      ],
-      "tags": {
-        "displayName": "config-app"
-      },
-      "properties": {
-        "publisher": "Microsoft.Azure.Extensions",
-        "type": "CustomScript",
-        "typeHandlerVersion": "2.0",
-        "autoUpgradeMinorVersion": true,
-        "settings": {
-          "skipDos2Unix":false,
-          "timestamp":123456789          
+        "apiVersion": "2015-06-15",
+        "dependsOn": [],
+        "location": "[resourceGroup().location]",
+        "name": "config-storage",
+        "properties": {
+          "accountType": "Standard_LRS"
         },
-        "protectedSettings": {
-           "commandToExecute": "bash deploy_classroom.sh",
-           "fileUris": ["https://github.com/uclixngithubclassroom/classroom/blob/ARMTemplateFeature/deploy_classroom.sh"]  
+        "type": "Microsoft.Storage/storageAccounts"
+    }, 
+    {
+        "apiVersion": "2015-06-15",
+        "dependsOn": [],
+        "location": "[resourceGroup().location]",
+        "type": "Microsoft.Compute/virtualMachines/extensions",
+        "name": "CustomExtension",
+        "properties": {
+          "publisher": "Microsoft.OSTCExtensions",
+          "type": "CustomScriptForLinux",
+          "typeHandlerVersion": "1.5",
+          "autoUpgradeMinorVersion": true,
+          "settings": {
+              "skipDos2Unix": false,
+              "fileUris": ["https://github.com/uclixngithubclassroom/classroom/blob/ARMTemplateFeature/deploy_classroom.sh"]
+          },
+          "protectedSettings": {
+              "commandToExecute": "bash deploy_classroom.sh"
+          }
         }
-      }
     }
   ]
 }
