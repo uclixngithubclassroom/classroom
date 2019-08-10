@@ -29,6 +29,13 @@ read -p 'Enter the non-staff Github Admin IDs: ' NON_STAFF_GITHUB_ADMIN_IDS
 #ACR Name initialisation
 ACR_NAME="$ACR_STRING$(date +'%Y%m%d_%H%M')"
 
+# Environment configuration for creating rake secret
+#gem install bundler -v 2.0.2
+#gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
+#\curl -sSL https://get.rvm.io | bash -s stable
+# Update to ruby version specified in .ruby-version file
+#[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
+
 #SECRET_KEY_BASE=$()
 
 #create resource-group
