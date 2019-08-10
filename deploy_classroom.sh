@@ -35,6 +35,7 @@ ACR_NAME="$ACR_STRING$(date +'%Y%m%d_%H%M')"
 #\curl -sSL https://get.rvm.io | bash -s stable
 # Update to ruby version specified in .ruby-version file
 #[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
+# rvm install (ruby-version)
 
 #SECRET_KEY_BASE=$()
 
