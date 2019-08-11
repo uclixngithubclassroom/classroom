@@ -1,5 +1,5 @@
 # GitHub Classroom
-[![Build Status](https://travis-ci.org/education/classroom.svg?branch=master)](https://travis-ci.org/education/classroom) [![Code Climate](https://codeclimate.com/github/education/classroom/badges/gpa.svg)](https://codeclimate.com/github/education/classroom)
+[![Build Status](https://travis-ci.org/education/classroom.svg?branch=master)](https://travis-ci.org/education/classroom) [![Code Climate](https://codeclimate.com/github/education/classroom/badges/gpa.svg)](https://codeclimate.com/github/education/classroom) [![Docker Build](https://img.shields.io/docker/cloud/build/oznacargazi/github-classroom.svg)]
 
 ## Table of Contents
 
