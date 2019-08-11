@@ -20,7 +20,7 @@ spec:
       containers:
       - command:
         - bash
-        image: registry.hub.docker.com/oznacargazi/github-classroom #$CLASSROOMACR.azurecr.io/classroom_rubyrails #classroomacr.azurecr.io/classroom_rubyrails
+        image: $CLASSROOMACR.azurecr.io/classroom_rubyrails #classroomacr.azurecr.io/classroom_rubyrails #registry.hub.docker.com/oznacargazi/github-classroom 
         name: classroom-rubyrails
         command: ["/bin/sh", "-c"]
         args: ["echo SECRET_KEY_BASE=$(rake secret) >> .env; /usr/src/app/script/run;"]
