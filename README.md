@@ -1,5 +1,5 @@
 # GitHub Classroom
-[![Build Status](https://travis-ci.org/education/classroom.svg?branch=master)](https://travis-ci.org/education/classroom) ![Docker Build (https://img.shields.io/docker/cloud/build/oznacargazi/github-classroom.svg)](https://hub.docker.com/r/oznacargazi/github-classroom) [![Code Climate](https://codeclimate.com/github/education/classroom/badges/gpa.svg)](https://codeclimate.com/github/education/classroom) 
+[![Build Status](https://travis-ci.org/education/classroom.svg?branch=master)](https://travis-ci.org/education/classroom) [![Docker Build Status](https://img.shields.io/docker/cloud/build/oznacargazi/github-classroom.svg)](https://hub.docker.com/r/oznacargazi/github-classroom) [![Code Climate](https://codeclimate.com/github/education/classroom/badges/gpa.svg)](https://codeclimate.com/github/education/classroom) 
 ## Table of Contents
 
 - [The workflow you use as a developer, scaled for the needs of students.](#the-workflow-you-use-as-a-developer-scaled-for-the-needs-of-students)
