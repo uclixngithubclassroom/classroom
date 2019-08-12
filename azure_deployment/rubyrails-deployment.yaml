@@ -20,10 +20,10 @@ spec:
       containers:
       - command:
         - bash
-        image: $CLASSROOMACR.azurecr.io/classroom_rubyrails #classroomacr.azurecr.io/classroom_rubyrails #registry.hub.docker.com/oznacargazi/github-classroom 
+        image: registry.hub.docker.com/oznacargazi/github-classroom  #$CLASSROOMACR.azurecr.io/classroom_rubyrails #classroomacr.azurecr.io/classroom_rubyrails #
         name: classroom-rubyrails
         command: ["/bin/sh", "-c"]
-        args: ["echo SECRET_KEY_BASE=$(rake secret) >> .env; /usr/src/app/script/run;"]
+        args: ["/usr/src/app/script/run;"] #echo SECRET_KEY_BASE=$(rake secret) >> .env;
         env: 
         - name: 'FOUNDELASTICSEARCH_URL'
           value: 'elasticsearch:9227'
@@ -39,8 +39,8 @@ spec:
           value:  $AIRBRAKE_PROJECT_ID # '238971'
         - name: 'AIRBRAKE_PROJECT_KEY'
           value: $AIRBRAKE_PROJECT_KEY #'a3028a6657c6305de9b61e8be96ed59f'  
-        # - name: 'SECRET_KEY_BASE'
-        #   value: '610823461484812c67d7e732168014abd344a91b0e2b658d5f64f2f29372abafc999184fc362eb5a6e21f274200f801cd0fe7ea3cce24def5b21b617ff304ddd' 
+        - name: 'SECRET_KEY_BASE'
+          value: '610823461484812c67d7e732168014abd344a91b0e2b658d5f64f2f29372abafc999184fc362eb5a6e21f274200f801cd0fe7ea3cce24def5b21b617ff304ddd' 
           #$SECRET_KEY_BASE
         - name: 'GITHUB_CLIENT_ID' # fd13f782958301868854
           value: $GITHUB_CLIENT_ID 
