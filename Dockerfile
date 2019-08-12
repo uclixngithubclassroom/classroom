@@ -46,7 +46,7 @@ RUN find . -type f -exec dos2unix -q {} \;
 RUN ls -l
 
 RUN echo Rails.application.config.secret_key_base=$(rake secret) > /usr/src/app/config/initializers/secret_token.rb
-
+RUN cat /usr/src/app/config/initializers/secret_token.rb
 
 #Startup script and port forwarding
 COPY config/rinetd.conf /etc/rinetd.conf
