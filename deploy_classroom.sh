@@ -44,12 +44,12 @@ echo "Creating Resource Group -->"
 az group create --name $RESOURCE_GROUP_NAME --location $RESOURCE_GROUP_LOCATION
 
 # Create an Azure Container Registry inside the resource group  
-#echo "Creating Azure Container Registry in the Resource Group -->"
-#az acr create --resource-group $RESOURCE_GROUP_NAME --name $ACR_NAME --sku Basic
+echo "Creating Azure Container Registry in the Resource Group -->"
+az acr create --resource-group $RESOURCE_GROUP_NAME --name $ACR_NAME --sku Basic
 
 # Login to ACR
-#echo "Login in to ACR -->"
-#az acr login --name $ACR_NAME
+echo "Login in to ACR -->"
+az acr login --name $ACR_NAME
 
 # Create Service Principle
 SERVICE_PRINCIPLE=$(az ad sp create-for-rbac --skip-assignment)
@@ -64,12 +64,12 @@ echo "App Id -> $APP_ID"
 echo "App password -> $APP_PW"
 
 # Build docker image on acr
-#az acr build --file Dockerfile --registry $ACR_NAME --image classroom_rubyrails .
+az acr build --file Dockerfile --registry $ACR_NAME --image classroom_rubyrails .
 
 # Get the ACR registry resource id
-#ACR_ID=$(az acr show --name $ACR_NAME --resource-group $RESOURCE_GROUP_NAME --query "id" --output tsv)
+ACR_ID=$(az acr show --name $ACR_NAME --resource-group $RESOURCE_GROUP_NAME --query "id" --output tsv)
 
-#echo "ACR ID -> $ACR_ID"
+echo "ACR ID -> $ACR_ID"
 
 # Create an Azure Kubernetes Service inside the Resource Group
 echo "Creating AKS Cluster in the Resource Group -->"
@@ -80,7 +80,7 @@ CLIENT_ID=$(az aks show --resource-group $RESOURCE_GROUP_NAME --name $AKS_CLUSTE
 echo "Client ID -> $CLIENT_ID"
 
 # Create role assignment
-#az role assignment create --assignee $APP_ID --role acrpull --scope $ACR_ID
+az role assignment create --assignee $APP_ID --role acrpull --scope $ACR_ID
 
 # Connect to cluster
 echo "Connecting to AKS Cluster -->"
