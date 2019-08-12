@@ -95,7 +95,7 @@ cd azure_deployment
 #Configure variables
 sed -i "s|\$AIRBRAKE_PROJECT_ID|'${AIRBRAKE_PROJECT_ID}'|" rubyrails-deployment.yaml
 sed -i "s|\$AIRBRAKE_PROJECT_KEY|'${AIRBRAKE_PROJECT_KEY}'|" rubyrails-deployment.yaml
-sed -i "s|\$CLASSROOMACR|'${ACR_NAME}'|" rubyrails-deployment.yaml
+sed -i "s|\$CLASSROOMACR|${ACR_NAME}|" rubyrails-deployment.yaml
 sed -i "s|\$GITHUB_CLIENT_ID|'${GITHUB_CLIENT_ID}'|" rubyrails-deployment.yaml
 sed -i "s|\$GITHUB_CLIENT_SECRET|'${GITHUB_CLIENT_SECRET}'|" rubyrails-deployment.yaml
 sed -i "s|\$NON_STAFF_GITHUB_ADMIN_IDS|'${NON_STAFF_GITHUB_ADMIN_IDS}'|" rubyrails-deployment.yaml
