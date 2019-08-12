@@ -18,16 +18,24 @@ git checkout UCLAzureDeploy
 read -p 'Enter the Resource Group Name that Classroom will be deployed (Case sensitive): ' RESOURCE_GROUP_NAME
 read -p 'Enter the resource location for the deployment [ukwest, uksouth]:' RESOURCE_GROUP_LOCATION
 read -p 'Enter the AKS Cluster Name that Classroom will be deployed (Case sensitive): ' AKS_CLUSTER_NAME
-read -p 'Enter the Airbrake Project ID  (Case sensitive)(Quotes required): ' AIRBRAKE_PROJECT_ID
-read -p 'Enter the Airbrake Project Key  (Case sensitive)(Quotes required): ' AIRBRAKE_PROJECT_KEYv
+read -p 'Enter the Airbrake Project ID  (Case sensitive): ' AIRBRAKE_PROJECT_ID
+read -p 'Enter the Airbrake Project Key  (Case sensitive): ' AIRBRAKE_PROJECT_KEY
 read -p 'Enter the Azure Container Registery name: ' ACR_NAME
-read -p 'Enter the Github Client ID (Quotes required): ' GITHUB_CLIENT_ID
-read -p 'Enter the Github Client Secret (Quotes required): ' GITHUB_CLIENT_SECRET
-read -p 'Enter the non-staff Github Admin IDs (Quotes required): ' NON_STAFF_GITHUB_ADMIN_IDS
+read -p 'Enter the Github Client ID: ' GITHUB_CLIENT_ID
+read -p 'Enter the Github Client Secret: ' GITHUB_CLIENT_SECRET
+read -p 'Enter the non-staff Github Admin ID: ' NON_STAFF_GITHUB_ADMIN_IDS
 
 # Get secret key from the user using the Azure Shell command
 #ACR Name initialisation
 #="$ACR_STRING$(date +'%Y%m%d_%H%M')"
+
+# Variable formatting
+AIRBRAKE_PROJECT_ID="'${AIRBRAKE_PROJECT_ID}'"
+AIRBRAKE_PROJECT_KEY="'${AIRBRAKE_PROJECT_KEY}'"
+GITHUB_CLIENT_ID="'${GITHUB_CLIENT_ID}'"
+GITHUB_CLIENT_SECRET="'${GITHUB_CLIENT_SECRET}'"
+NON_STAFF_GITHUB_ADMIN_IDS="'${NON_STAFF_GITHUB_ADMIN_IDS}'"
+
 
 # Environment configuration for creating rake secret
 #gem install bundler -v 2.0.2
