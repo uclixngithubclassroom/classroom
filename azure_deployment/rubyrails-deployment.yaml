@@ -23,7 +23,7 @@ spec:
         image: $CLASSROOMACR.azurecr.io/classroom_rubyrails #registry.hub.docker.com/oznacargazi/github-classroom  #classroomacr.azurecr.io/classroom_rubyrails
         name: classroom-rubyrails
         command: ["/bin/sh", "-c"]
-        args: ["/usr/src/app/script/run;"] #echo SECRET_KEY_BASE=$(rake secret) >> .env;
+        args: ["echo SECRET_KEY_BASE=$(rake secret) >> .env;/usr/src/app/script/run;"]
         env: 
         - name: 'FOUNDELASTICSEARCH_URL'
           value: 'elasticsearch:9227'
