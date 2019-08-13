@@ -75,7 +75,7 @@ az acr login --name $ACR_NAME
 # Create Service Principle
 SERVICE_PRINCIPLE=$(az ad sp create-for-rbac --skip-assignment)
 
-echo "SERVICE_PRINCIPLE -> $SERVICE_PRINCIPLE"/
+echo "SERVICE_PRINCIPLE -> $SERVICE_PRINCIPLE"
 
 # Parse JSON and get appId
 APP_ID=$(jq -r '.appId' <<< "$SERVICE_PRINCIPLE") 
