@@ -12,11 +12,29 @@ git clone https://github.com/uclixngithubclassroom/classroom.git
 cd classroom
 git checkout UCLAzureDeploy
 
+valid=false
+regex=^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$
 
 #LOCATIONS = centralus,eastasia,southeastasia,eastus,eastus2,westus,westus2,northcentralus,southcentralus,westcentralus,northeurope,westeurope,japaneast,japanwest,brazilsouth,australiasoutheast,australiaeast,westindia,southindia,centralindia,canadacentral,canadaeast,uksouth,ukwest,koreacentral,koreasouth,francecentral,southafricanorth,uaenorth,australiacentral
 # Read details for the resource group and its elements from the user
-read -p 'Enter the Resource Group Name that Classroom will be deployed (Case sensitive): ' RESOURCE_GROUP_NAME
+
+while :
+do
+	read -p 'Enter the Resource Group Name that Classroom will be deployed (Case sensitive): ' RESOURCE_GROUP_NAME
+	if [[ $RESOURCE_GROUP_NAME =~ ^[A-Za-z0-9._-()]+[A-Za-z0-9_-()]$ ]];
+	then
+		echo "Valid resource group name!"
+		break
+	else
+		echo "Resource group names only allow alphanumeric characters, periods, underscores, hyphens and parenthesis and cannot end in a period."
+	fi
+done
+
+echo "The list of Azure Regions: --->"
+az account list-locations -o table
+
 read -p 'Enter the resource location for the deployment [ukwest, uksouth]:' RESOURCE_GROUP_LOCATION
+
 read -p 'Enter the AKS Cluster Name that Classroom will be deployed (Case sensitive): ' AKS_CLUSTER_NAME
 read -p 'Enter the Airbrake Project ID  (Case sensitive): ' AIRBRAKE_PROJECT_ID
 read -p 'Enter the Airbrake Project Key  (Case sensitive): ' AIRBRAKE_PROJECT_KEY
@@ -50,9 +68,9 @@ az group create --name $RESOURCE_GROUP_NAME --location $RESOURCE_GROUP_LOCATION
 echo "Creating Azure Container Registry in the Resource Group -->"
 az acr create --resource-group $RESOURCE_GROUP_NAME --name $ACR_NAME --sku Basic
 
-# Login to ACR
-echo "Login in to ACR -->"
-az acr login --name $ACR_NAME
+# # Login to ACR
+# echo "Login in to ACR -->"
+# az acr login --name $ACR_NAME
 
 # Create Service Principle
 SERVICE_PRINCIPLE=$(az ad sp create-for-rbac --skip-assignment)
