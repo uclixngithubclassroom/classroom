@@ -68,9 +68,9 @@ az group create --name $RESOURCE_GROUP_NAME --location $RESOURCE_GROUP_LOCATION
 echo "Creating Azure Container Registry in the Resource Group -->"
 az acr create --resource-group $RESOURCE_GROUP_NAME --name $ACR_NAME --sku Basic
 
-# # Login to ACR
-# echo "Login in to ACR -->"
-# az acr login --name $ACR_NAME
+# Login to ACR
+echo "Login in to ACR -->"
+az acr login --name $ACR_NAME
 
 # Create Service Principle
 SERVICE_PRINCIPLE=$(az ad sp create-for-rbac --skip-assignment)
