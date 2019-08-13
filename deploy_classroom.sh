@@ -38,7 +38,19 @@ read -p 'Enter the resource location for the deployment [ukwest, uksouth]:' RESO
 read -p 'Enter the AKS Cluster Name that Classroom will be deployed (Case sensitive): ' AKS_CLUSTER_NAME
 read -p 'Enter the Airbrake Project ID  (Case sensitive): ' AIRBRAKE_PROJECT_ID
 read -p 'Enter the Airbrake Project Key  (Case sensitive): ' AIRBRAKE_PROJECT_KEY
-read -p 'Enter the Azure Container Registery name: ' ACR_NAME
+
+while :
+do
+	read -p 'Enter the Azure Container Registry name: ' ACR_NAME
+	if [[ ${#ACR_NAME} -gt 5 ]];
+	then
+		echo "Valid ACR name!"
+		break
+	else
+		echo "Registry name must greater than 5."
+	fi
+done
+
 read -p 'Enter the Github Client ID: ' GITHUB_CLIENT_ID
 read -p 'Enter the Github Client Secret: ' GITHUB_CLIENT_SECRET
 read -p 'Enter the non-staff Github Admin ID: ' NON_STAFF_GITHUB_ADMIN_IDS
