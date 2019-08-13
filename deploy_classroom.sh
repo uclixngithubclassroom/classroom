@@ -21,7 +21,7 @@ regex=^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$
 while :
 do
 	read -p 'Enter the Resource Group Name that Classroom will be deployed (Case sensitive): ' RESOURCE_GROUP_NAME
-	if [[ $RESOURCE_GROUP_NAME =~ ^[A-Za-z0-9._-()]+[A-Za-z0-9_-()]$ ]];
+	if [[ $RESOURCE_GROUP_NAME =~ ^[A-Za-z0-9._-()]*[A-Za-z0-9_-()]+$ ]];
 	then
 		echo "Valid resource group name!"
 		break
