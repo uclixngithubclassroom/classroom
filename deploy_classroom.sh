@@ -119,9 +119,9 @@ az role assignment create --assignee $APP_ID --role acrpull --scope $ACR_ID
 echo "Connecting to AKS Cluster -->"
 az aks get-credentials --resource-group $RESOURCE_GROUP_NAME --name $AKS_CLUSTER_NAME
 
-sed -i "s|\$GITHUB_CLIENT_ID|'${GITHUB_CLIENT_ID}'|" .env
-sed -i "s|\$GITHUB_CLIENT_SECRET|'${GITHUB_CLIENT_SECRET}'|" .env
-sed -i "s|\$NON_STAFF_GITHUB_ADMIN_IDS|'${NON_STAFF_GITHUB_ADMIN_IDS}'|" .env
+sed -i "s|\$GITHUB_CLIENT_ID|${GITHUB_CLIENT_ID}|" .env
+sed -i "s|\$GITHUB_CLIENT_SECRET|${GITHUB_CLIENT_SECRET}|" .env
+sed -i "s|\$NON_STAFF_GITHUB_ADMIN_IDS|${NON_STAFF_GITHUB_ADMIN_IDS}|" .env
 
 # Navigate to configuration folder
 cd azure_deployment
