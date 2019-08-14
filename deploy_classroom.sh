@@ -127,7 +127,7 @@ az aks get-credentials --resource-group $RESOURCE_GROUP_NAME --name $AKS_CLUSTER
 # Navigate to configuration folder
 cd azure_deployment
 
-# Configure variables
+#Configure variables
 sed -i "s|\$AIRBRAKE_PROJECT_ID|'${AIRBRAKE_PROJECT_ID}'|" rubyrails-deployment.yaml
 sed -i "s|\$AIRBRAKE_PROJECT_KEY|'${AIRBRAKE_PROJECT_KEY}'|" rubyrails-deployment.yaml
 sed -i "s|\$CLASSROOMACR|${ACR_NAME}|" rubyrails-deployment.yaml
