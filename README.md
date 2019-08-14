@@ -314,12 +314,11 @@ This will download the script form this repository and start the deployment.
 
 Please make sure you check the "Development environment variables" and "Production environment variables" since you will be needing some of those.
 
-You will need to enter some of the details into the CLI and the deployment will start. After the ruby_rails is running, go to https://portal.azure.com and click "Resource groups" on the left, open the "MC_<your resource group name>_<your cluster name>_<location>" and find the Load balancer(kubernetes) in the overview, the Public IP address is at the top right after you click on it. The port number is usually 5000. You can also obtaine it after you enter "Ctrl C" and running the following command, the <ruby_rails_podid> should be replaced as what you got:
-	 
-	 ```bash
-	kubectl logs <ruby_rails_podid>
-	 ```
+You will need to enter some of the details into the CLI and the deployment will start. After the ruby_rails is running, go to https://portal.azure.com and click "Resource groups" on the left, open the "MC\_\<resource group name>\_\<cluster name>\_\<location>" and find the Load balancer(kubernetes) in the overview, the Public IP address is at the top right after you click on it. The port number is usually 5000. You can also obtaine it after you enter `Ctrl C` and running the following command, the <ruby_rails_podid> should be replaced as what you got:  
 	
+	 kubectl logs <ruby_rails_podid>
+	
+
 
 ### Production environment variables
 
