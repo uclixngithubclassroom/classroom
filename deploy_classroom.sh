@@ -72,6 +72,10 @@ read -p 'Enter the non-staff Github Admin ID: ' NON_STAFF_GITHUB_ADMIN_IDS
 #rvm install (ruby-version)
 #SECRET_KEY_BASE=$()
 
+sed -i "s|\$GITHUB_CLIENT_ID|${GITHUB_CLIENT_ID}|" .env
+sed -i "s|\$GITHUB_CLIENT_SECRET|${GITHUB_CLIENT_SECRET}|" .env
+sed -i "s|\$NON_STAFF_GITHUB_ADMIN_IDS|${NON_STAFF_GITHUB_ADMIN_IDS}|" .env
+
 #create resource-group
 echo "Creating Resource Group -->"
 az group create --name $RESOURCE_GROUP_NAME --location $RESOURCE_GROUP_LOCATION
@@ -118,10 +122,6 @@ az role assignment create --assignee $APP_ID --role acrpull --scope $ACR_ID
 # Connect to cluster
 echo "Connecting to AKS Cluster -->"
 az aks get-credentials --resource-group $RESOURCE_GROUP_NAME --name $AKS_CLUSTER_NAME
-
-sed -i "s|\$GITHUB_CLIENT_ID|${GITHUB_CLIENT_ID}|" .env
-sed -i "s|\$GITHUB_CLIENT_SECRET|${GITHUB_CLIENT_SECRET}|" .env
-sed -i "s|\$NON_STAFF_GITHUB_ADMIN_IDS|${NON_STAFF_GITHUB_ADMIN_IDS}|" .env
 
 # Navigate to configuration folder
 cd azure_deployment
