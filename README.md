@@ -177,7 +177,7 @@ Once that's done the script will kindly remind you to fill out you `.env` file i
   - Run the command ```docker-compose -f docker-compose-sc.yml up --build```, In order to build the Docker Image and run the containners. (We write a new docker-compose-sc.yml file to implement the dockerization.)
   - The containers will automatically run the setup process, wait until the classroom-rubyrails is listening on localhost:5000.
 
-## AKS Deployment process (Unfinished)
+## AKS Deployment process
 
 - The main process of the AKS deployment follows the link [https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-prepare-app], We will automate the process after we finish manual deployment.
 - Before the AKS deployment, make sure you have azure CLI, kubernetes CLI, Kompose and Docker installed in your computer.
