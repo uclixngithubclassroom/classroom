@@ -167,15 +167,16 @@ Once that's done the script will kindly remind you to fill out you `.env` file i
   - Fill out the environment variables inside the .env file in the root path of the Github Classroom. You can modify it by entering ```notepad .env```in the PowerShell, .env file will be opened in Notepad for you to fill the details.
   - Run the command ```docker-compose -f docker-compose-sc.yml up --build```, In order to build the Docker Image and run the containers. (We write a new docker-compose-sc.yml file to implement the dockerization.)
 
- #### Linux
-
  #### Mac OS
   - Clone the repository.
   - Navigate to the cloned folder
   - Download Docker Desktop for Mac from the following link [https://hub.docker.com/editions/community/docker-ce-desktop-mac]. After the installation process make sure that you execute the Docker application in your computer. It may take 1-2 mins to start Docker.
   - Fill out the environment variables inside the .env file in the root path of the Github Classroom. You can modify it by entering ```nano .env```in the terminal.
   - Run the command ```docker-compose -f docker-compose-sc.yml up --build```, In order to build the Docker Image and run the containners. (We write a new docker-compose-sc.yml file to implement the dockerization.)
-  - The containers will automatically run the setup process, wait until the classroom-rubyrails is listening on localhost:5000.
+  - The containers will automatically run the setup process, wait until the classroom-rubyrails is listening on localhost:5000.  
+  
+ #### Linux  
+  The steps to operate on linux are similar as on Mac OS.
 
 ## AKS Deployment process
 
