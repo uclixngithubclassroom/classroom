@@ -72,6 +72,7 @@ read -p 'Enter the non-staff Github Admin ID: ' NON_STAFF_GITHUB_ADMIN_IDS
 #rvm install (ruby-version)
 #SECRET_KEY_BASE=$()
 
+# Setup the .env file
 #sed -i "s|\$GITHUB_CLIENT_ID|${GITHUB_CLIENT_ID}|" .env
 #sed -i "s|\$GITHUB_CLIENT_SECRET|${GITHUB_CLIENT_SECRET}|" .env
 #sed -i "s|\$NON_STAFF_GITHUB_ADMIN_IDS|${NON_STAFF_GITHUB_ADMIN_IDS}|" .env
@@ -130,9 +131,9 @@ cd azure_deployment
 sed -i "s|\$AIRBRAKE_PROJECT_ID|'${AIRBRAKE_PROJECT_ID}'|" rubyrails-deployment.yaml
 sed -i "s|\$AIRBRAKE_PROJECT_KEY|'${AIRBRAKE_PROJECT_KEY}'|" rubyrails-deployment.yaml
 sed -i "s|\$CLASSROOMACR|${ACR_NAME}|" rubyrails-deployment.yaml
-sed -i "s|\$GITHUB_CLIENT_ID|'${GITHUB_CLIENT_ID}'|" rubyrails-deployment.yaml
-sed -i "s|\$GITHUB_CLIENT_SECRET|'${GITHUB_CLIENT_SECRET}'|" rubyrails-deployment.yaml
-sed -i "s|\$NON_STAFF_GITHUB_ADMIN_IDS|'${NON_STAFF_GITHUB_ADMIN_IDS}'|" rubyrails-deployment.yaml
+sed -i "s|\$GITHUB_CLIENT_ID|"${GITHUB_CLIENT_ID}"|" rubyrails-deployment.yaml
+sed -i "s|\$GITHUB_CLIENT_SECRET|"${GITHUB_CLIENT_SECRET}"|" rubyrails-deployment.yaml
+sed -i "s|\$NON_STAFF_GITHUB_ADMIN_IDS|"${NON_STAFF_GITHUB_ADMIN_IDS}"|" rubyrails-deployment.yaml
 
 # Deploy it on AKS
 kubectl create -f classroom-classroom-data-elasticsearch-data-persistentvolumeclaim.yaml,classroom-classroom-data-elasticsearch-logs-persistentvolumeclaim.yaml,classroom-classroom-data-postgres-data-persistentvolumeclaim.yaml,classroom-classroom-data-postgres-logs-persistentvolumeclaim.yaml,classroom-classroom-data-redis-data-persistentvolumeclaim.yaml,classroom-classroom-data-redis-logs-persistentvolumeclaim.yaml,elasticsearch-deployment.yaml,elasticsearch-service.yaml,memcached-deployment.yaml,memcached-service.yaml,postgresql-deployment.yaml,postgresql-service.yaml,redis-deployment.yaml,redis-service.yaml,rubyrails-deployment.yaml,rubyrails-service.yaml
