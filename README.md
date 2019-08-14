@@ -146,64 +146,6 @@ script/setup
 
 Once that's done the script will kindly remind you to fill out you `.env` file inside the repository, this is the breakdown.
 
-## Deploying Github Classroom on Docker 
-
-#### Known Issues for Windows
-  - Since this project was not previously made for the Windows OS, some filepaths exceeds 260 character limit. To be able to clone the repository. 
-    * Firstly, run the command ```git config --system core.longpaths true```.
-
-  - If this does not fix the long filename issue for you try the following steps
-    * Open the Windows Start menu and type ```regedit.``` Launch the application.
-    - Navigate to HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem
-    - Right-click the value “LongPathsEnabled” and select Modify.
-    - Change “Value data” from 0 to 1.
-    - Click OK.
-
- #### Windows
-  - Clone the repository.
-  - Navigate to the cloned folder
-  - Download Docker Toolbox v18.09.3 from the following link [https://github.com/docker/toolbox/releases]. After the installation process make sure that you execute the Docker Quickstart Terminal or alternatively run the command ```docker-machine start``` from the Powershell.
-  - Make sure that the VM has enough memory to run the container. You can ensure this by connecting to the VM and increasing the memory allocated for it by ```docker-machine ssh```. Afterwards, inside the VM increase the memory by executing ```sudo sysctl -w vm.max_map_count=262144``` 
-  - Fill out the environment variables inside the .env file in the root path of the Github Classroom. You can modify it by entering ```notepad .env```in the PowerShell, .env file will be opened in Notepad for you to fill the details.
-  - Run the command ```docker-compose -f docker-compose-sc.yml up --build```, In order to build the Docker Image and run the containers. (We write a new docker-compose-sc.yml file to implement the dockerization.)
-
- #### Linux
-
- #### Mac OS
-  - Clone the repository.
-  - Navigate to the cloned folder
-  - Download Docker Desktop for Mac from the following link [https://hub.docker.com/editions/community/docker-ce-desktop-mac]. After the installation process make sure that you execute the Docker application in your computer. It may take 1-2 mins to start Docker.
-  - Fill out the environment variables inside the .env file in the root path of the Github Classroom. You can modify it by entering ```nano .env```in the terminal.
-  - Run the command ```docker-compose -f docker-compose-sc.yml up --build```, In order to build the Docker Image and run the containners. (We write a new docker-compose-sc.yml file to implement the dockerization.)
-  - The containers will automatically run the setup process, wait until the classroom-rubyrails is listening on localhost:5000.
-
-## AKS Deployment process
-
-- The main process of the AKS deployment follows the link [https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-prepare-app], We will automate the process after we finish manual deployment.
-- Before the AKS deployment, make sure you have azure CLI, kubernetes CLI, Kompose and Docker installed in your computer.
-
-
-- Get the docker images from the step in UCL Docker Deployment instruction.
-- Create a resourse group ```az group create --name myResourceGroup --location uksouth```
-- Creat an Azure Container Registry inside the resource group ```az acr create --resource-group myResourceGroup --name <acrName> --sku Basic```
-- Login the container registry  ```az acr login --name <acrName>```
-- Get the login server address ```az acr list --resource-group myResourceGroup --query "[].{acrLoginServer:loginServer}" --output table```
-- Tag the classroom-rubyrails image, and we only need to push this image to ACR. ```docker tag classroom-rubyrails <acrLoginServer>/classroom-rubyrails:v1```
-- Push images to registry. ```docker push <acrLoginServer>/classroom-rubyrails:v1```
-- Create a service principle ```az ad sp create-for-rbac --skip-assignment```, remember the appId and password.
-- Configure ACR authentication (To pull images from ACR): ```az acr show --resource-group myResourceGroup --name <acrName> --query "id" --output tsv```, ```az role assignment create --assignee <appId> --scope <acrId> --role acrpull```
-- Create a Kubenetes cluster. ```az aks create \
-    --resource-group myResourceGroup \
-    --name myAKSCluster \
-    --node-count 1 \
-    --service-principal <appId> \
-    --client-secret <password> \
-    --generate-ssh-keys```
-- Coneect to the cluster ```az aks get-credentials --resource-group myResourceGroup --name myAKSCluster```
-- cd to the azure deployment folder inside the classroom repo.
-- deploy the application by using the pre-defined yaml file: ```kubectl create -f classroom-classroom-data-elasticsearch-data-persistentvolumeclaim.yaml,classroom-classroom-data-elasticsearch-logs-persistentvolumeclaim.yaml,classroom-classroom-data-postgres-data-persistentvolumeclaim.yaml,classroom-classroom-data-postgres-logs-persistentvolumeclaim.yaml,classroom-classroom-data-redis-data-persistentvolumeclaim.yaml,classroom-classroom-data-redis-logs-persistentvolumeclaim.yaml,elasticsearch-deployment.yaml,elasticsearch-service.yaml,memcached-deployment.yaml,memcached-service.yaml,postgresql-deployment.yaml,postgresql-service.yaml,redis-deployment.yaml,redis-service.yaml,rubyrails-deployment.yaml,rubyrails-service.yaml```
-- use ```kubectl get pod -w``` to get the running status of each pod.
-
 ### Development environment variables
 
 These values must be present in your `.env` file (created by `script/setup`).
@@ -288,6 +230,65 @@ script/server
 ```
 
 Aaand that's it! You should have a working instance of GitHub Classroom located [here](http://localhost:5000)
+
+## Deploying Github Classroom on Docker 
+
+#### Known Issues for Windows
+  - Since this project was not previously made for the Windows OS, some filepaths exceeds 260 character limit. To be able to clone the repository. 
+    * Firstly, run the command ```git config --system core.longpaths true```.
+
+  - If this does not fix the long filename issue for you try the following steps
+    * Open the Windows Start menu and type ```regedit.``` Launch the application.
+    - Navigate to HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem
+    - Right-click the value “LongPathsEnabled” and select Modify.
+    - Change “Value data” from 0 to 1.
+    - Click OK.
+
+ #### Windows
+  - Clone the repository.
+  - Navigate to the cloned folder
+  - Download Docker Toolbox v18.09.3 from the following link [https://github.com/docker/toolbox/releases]. After the installation process make sure that you execute the Docker Quickstart Terminal or alternatively run the command ```docker-machine start``` from the Powershell.
+  - Make sure that the VM has enough memory to run the container. You can ensure this by connecting to the VM and increasing the memory allocated for it by ```docker-machine ssh```. Afterwards, inside the VM increase the memory by executing ```sudo sysctl -w vm.max_map_count=262144``` 
+  - Fill out the environment variables inside the .env file in the root path of the Github Classroom. You can modify it by entering ```notepad .env```in the PowerShell, .env file will be opened in Notepad for you to fill the details.
+  - Run the command ```docker-compose -f docker-compose-sc.yml up --build```, In order to build the Docker Image and run the containers. (We write a new docker-compose-sc.yml file to implement the dockerization.)
+
+ #### Mac OS
+  - Clone the repository.
+  - Navigate to the cloned folder
+  - Download Docker Desktop for Mac from the following link [https://hub.docker.com/editions/community/docker-ce-desktop-mac]. After the installation process make sure that you execute the Docker application in your computer. It may take 1-2 mins to start Docker.
+  - Fill out the environment variables inside the .env file in the root path of the Github Classroom. You can modify it by entering ```nano .env```in the terminal.
+  - Run the command ```docker-compose -f docker-compose-sc.yml up --build```, In order to build the Docker Image and run the containners. (We write a new docker-compose-sc.yml file to implement the dockerization.)
+  - The containers will automatically run the setup process, wait until the classroom-rubyrails is listening on localhost:5000.  
+  
+ #### Linux  
+  The steps to operate on linux are similar as on Mac OS.
+
+## AKS Deployment process
+
+- The main process of the AKS deployment follows the link [https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-prepare-app], We will automate the process after we finish manual deployment.
+- Before the AKS deployment, make sure you have azure CLI, kubernetes CLI, Kompose and Docker installed in your computer.
+
+
+- Get the docker images from the step in UCL Docker Deployment instruction.
+- Create a resourse group ```az group create --name myResourceGroup --location uksouth```
+- Creat an Azure Container Registry inside the resource group ```az acr create --resource-group myResourceGroup --name <acrName> --sku Basic```
+- Login the container registry  ```az acr login --name <acrName>```
+- Get the login server address ```az acr list --resource-group myResourceGroup --query "[].{acrLoginServer:loginServer}" --output table```
+- Tag the classroom-rubyrails image, and we only need to push this image to ACR. ```docker tag classroom-rubyrails <acrLoginServer>/classroom-rubyrails:v1```
+- Push images to registry. ```docker push <acrLoginServer>/classroom-rubyrails:v1```
+- Create a service principle ```az ad sp create-for-rbac --skip-assignment```, remember the appId and password.
+- Configure ACR authentication (To pull images from ACR): ```az acr show --resource-group myResourceGroup --name <acrName> --query "id" --output tsv```, ```az role assignment create --assignee <appId> --scope <acrId> --role acrpull```
+- Create a Kubenetes cluster. ```az aks create \
+    --resource-group myResourceGroup \
+    --name myAKSCluster \
+    --node-count 1 \
+    --service-principal <appId> \
+    --client-secret <password> \
+    --generate-ssh-keys```
+- Coneect to the cluster ```az aks get-credentials --resource-group myResourceGroup --name myAKSCluster```
+- cd to the azure deployment folder inside the classroom repo.
+- deploy the application by using the pre-defined yaml file: ```kubectl create -f classroom-classroom-data-elasticsearch-data-persistentvolumeclaim.yaml,classroom-classroom-data-elasticsearch-logs-persistentvolumeclaim.yaml,classroom-classroom-data-postgres-data-persistentvolumeclaim.yaml,classroom-classroom-data-postgres-logs-persistentvolumeclaim.yaml,classroom-classroom-data-redis-data-persistentvolumeclaim.yaml,classroom-classroom-data-redis-logs-persistentvolumeclaim.yaml,elasticsearch-deployment.yaml,elasticsearch-service.yaml,memcached-deployment.yaml,memcached-service.yaml,postgresql-deployment.yaml,postgresql-service.yaml,redis-deployment.yaml,redis-service.yaml,rubyrails-deployment.yaml,rubyrails-service.yaml```
+- use ```kubectl get pod -w``` to get the running status of each pod.
 
 ## Heroku Deployment
 We strongly encourage you to use [https://classroom.github.com](https://classroom.github.com), but if you would like your own version GitHub Classroom can be easily deployed to Heroku.
