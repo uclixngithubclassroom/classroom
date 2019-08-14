@@ -294,7 +294,7 @@ We strongly encourage you to use [https://classroom.github.com](https://classroo
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
- ### Azure deployment
+## Azure deployment
 
 Click to the button below for Azure deployment and follow the instructions
 
