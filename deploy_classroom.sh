@@ -72,9 +72,9 @@ read -p 'Enter the non-staff Github Admin ID: ' NON_STAFF_GITHUB_ADMIN_IDS
 #rvm install (ruby-version)
 #SECRET_KEY_BASE=$()
 
-sed -i "s|\$GITHUB_CLIENT_ID|${GITHUB_CLIENT_ID}|" .env
-sed -i "s|\$GITHUB_CLIENT_SECRET|${GITHUB_CLIENT_SECRET}|" .env
-sed -i "s|\$NON_STAFF_GITHUB_ADMIN_IDS|${NON_STAFF_GITHUB_ADMIN_IDS}|" .env
+#sed -i "s|\$GITHUB_CLIENT_ID|${GITHUB_CLIENT_ID}|" .env
+#sed -i "s|\$GITHUB_CLIENT_SECRET|${GITHUB_CLIENT_SECRET}|" .env
+#sed -i "s|\$NON_STAFF_GITHUB_ADMIN_IDS|${NON_STAFF_GITHUB_ADMIN_IDS}|" .env
 
 #create resource-group
 echo "Creating Resource Group -->"
