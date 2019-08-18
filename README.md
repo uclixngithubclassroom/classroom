@@ -319,7 +319,7 @@ You will need to enter some of the details into the CLI and the deployment will 
 	
 	 kubectl logs <ruby_rails_podID>  
 	
-Open a new browser and enter \<IP address\>:5000 to see the GitHub Classroom that you have deployed.
+Open a new browser and enter \<IP address\>:5000 to see the GitHub Classroom that you have deployed. Before that, make sure the Homepage URL and Authorization callback URL in the setting of OAuth Apps is correct.
 
 ### Production environment variables
 
