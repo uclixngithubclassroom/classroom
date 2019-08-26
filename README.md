@@ -274,7 +274,7 @@ Aaand that's it! You should have a working instance of GitHub Classroom located 
 - Creat an Azure Container Registry inside the resource group ```az acr create --resource-group myResourceGroup --name <acrName> --sku Basic```
 - Login the container registry  ```az acr login --name <acrName>```
 - Get the login server address ```az acr list --resource-group myResourceGroup --query "[].{acrLoginServer:loginServer}" --output table```
-- Tag the classroom-rubyrails image, and we only need to push this image to ACR. ```docker tag classroom-rubyrails <acrLoginServer>/classroom-rubyrails:v1```
+- Tag the classroom-rubyrails image, and we only need to push this image to ACR. ```docker tag classroom_rubyrails <acrLoginServer>/classroom-rubyrails:v1```
 - Push images to registry. ```docker push <acrLoginServer>/classroom-rubyrails:v1```
 - Create a service principle ```az ad sp create-for-rbac --skip-assignment```, remember the appId and password.
 - Configure ACR authentication (To pull images from ACR): ```az acr show --resource-group myResourceGroup --name <acrName> --query "id" --output tsv```, ```az role assignment create --assignee <appId> --scope <acrId> --role acrpull```
